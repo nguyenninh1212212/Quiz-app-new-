@@ -1,0 +1,127 @@
+import React from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { Feather } from "@expo/vector-icons";
+
+export default function ProfileScreen() {
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        {/* Avatar */}
+        <Image
+          source={{ uri: "https://i.pravatar.cc/100" }}
+          style={styles.avatar}
+        />
+        {/* Thông tin bên phải */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.name}>Nguyễn Văn B</Text>
+          <View style={styles.premiumBadge}>
+            <Text style={styles.premiumText}>Premium</Text>
+          </View>
+        </View>
+        {/* Edit Icon */}
+        <TouchableOpacity style={styles.editIcon}>
+          <Feather name="edit" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Info Section */}
+      <View style={styles.infoSection}>
+        <ProfileInfo label="Đang theo học tại:" value="Đại học điện lực" />
+        <ProfileInfo label="Cấp:" value="Đại học" />
+        <ProfileInfo label="Trình độ học vấn:" value="Sinh viên năm 3" />
+        <ProfileInfo label="Chuyên ngành:" value="Công nghệ phần mềm" />
+        <ProfileInfo label="Email:" value="Abc@gmail.com" />
+      </View>
+
+      {/* Logout Button */}
+      <TouchableOpacity style={styles.logoutButton}>
+        <Text style={styles.logoutButtonText}>Đăng xuất</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const ProfileInfo = ({ label, value }) => (
+  <View style={styles.profileInfoContainer}>
+    <Text style={styles.profileLabel}>{label}</Text>
+    <Text style={styles.profileValue}>{value}</Text>
+  </View>
+);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#1E2333",
+    padding: 16,
+  },
+  header: {
+    backgroundColor: "#131827",
+    padding: 12,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+  },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+  },
+  infoContainer: {
+    marginLeft: 16,
+  },
+  name: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  premiumBadge: {
+    marginTop: 4,
+    backgroundColor: "#F1C40F",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+    alignSelf: "flex-start",
+  },
+  premiumText: {
+    color: "black",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  editIcon: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+  },
+  infoSection: {
+    backgroundColor: "#2D3250",
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 16,
+  },
+  logoutButton: {
+    backgroundColor: "#E74C3C",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 24,
+  },
+  logoutButtonText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  profileInfoContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#4A4A4A",
+    paddingVertical: 8,
+  },
+  profileLabel: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  profileValue: {
+    color: "#B3B3B3",
+  },
+});
