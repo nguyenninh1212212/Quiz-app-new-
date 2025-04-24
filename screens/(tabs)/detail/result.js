@@ -14,7 +14,7 @@ const ResultScreen = ({ route }) => {
   const completionPercentage = Math.round((numCorrect / numTotal) * 100) || 0;
   
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#0D1440" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164" }}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }}>
         <Text style={{ color: "white", fontSize: 32, fontWeight: "bold", marginBottom: 32 }}>Kết quả</Text>
         
@@ -35,7 +35,7 @@ const ResultScreen = ({ route }) => {
             </View>
             <Text style={{ color: "#F472B6", fontWeight: "600", fontSize: 18 }}>{completionPercentage}%</Text>
           </View>
-          
+            
           {/* Tổng số câu hỏi */}
           <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -70,24 +70,21 @@ const ResultScreen = ({ route }) => {
         <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", marginBottom: 32 }}>
           <TouchableOpacity style={{ backgroundColor: "#2563EB", width: 60, height: 60, borderRadius: 30, justifyContent: "center", alignItems: "center" }}>
             <Ionicons name="save-outline" size={30} color="white" />
-            <Text style={{ color: "white", fontSize: 12, marginTop: 4 }}>Lưu</Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={{ backgroundColor: "#4F46E5", width: 60, height: 60, borderRadius: 30, justifyContent: "center", alignItems: "center" }}>
             <Ionicons name="thumbs-up-outline" size={30} color="white" />
-            <Text style={{ color: "white", fontSize: 12, marginTop: 4 }}>Like</Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={{ backgroundColor: "#F472B6", width: 60, height: 60, borderRadius: 30, justifyContent: "center", alignItems: "center" }}>
             <Ionicons name="share-social-outline" size={30} color="white" />
-            <Text style={{ color: "white", fontSize: 12, marginTop: 4 }}>Chia sẻ</Text>
           </TouchableOpacity>
         </View>
         
         {/* Nút xác nhận */}
         <TouchableOpacity 
           style={{ backgroundColor: "#FBBF24", width: "100%", paddingVertical: 16, borderRadius: 16, alignItems: "center" }}
-          onPress={() => navigation.navigate("Exam")} // Sử dụng navigation.navigate thay vì router.push
+          onPress={() => navigation.goBack()}
         >
           <Text style={{ color: "black", fontSize: 18, fontWeight: "bold" }}>Xác nhận</Text>
         </TouchableOpacity>

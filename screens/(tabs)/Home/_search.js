@@ -8,7 +8,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import QuizCard from "@/components/Card/QuizCard";
+import QuizCard from "../../../components/Card/QuizCard";
 
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState("");

@@ -8,26 +8,25 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import BaseHeader from "@/components/BaseHeader";
+import { useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
 
 const Exam = () => {
   const [activeTab, setActiveTab] = useState(false);
-  const router = useRouter();
+  const navigation = useNavigation(); // Initialize the navigation hook
 
   const onPress = useCallback(() => {
-    router.push({ pathname: "/(Exam)/detail/[id]", params: { id: "1" } });
-  }, [router]);
+    navigation.navigate("Làm câu hỏi", { id: "1" }); // Navigate to Detail screen
+  }, [navigation]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#0D1440" }}>
-      <BaseHeader name="Nội dung" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164",padding:16 }}>
       <ScrollView
         style={{
           backgroundColor: "#f4f4f4",
           flex: 1,
           padding: 16,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
+          borderRadius: 24,
+          
         }}
       >
         <View style={{ backgroundColor: "#e1e1e1", borderRadius: 16 }}>
@@ -76,7 +75,7 @@ const Exam = () => {
               borderRadius: 12,
               alignItems: "center",
             }}
-            onPress={onPress}
+            onPress={onPress} // Navigate to the Detail screen
           >
             <Text style={{ color: "black", fontWeight: "600" }}>Bắt đầu</Text>
           </TouchableOpacity>
@@ -106,9 +105,7 @@ const Exam = () => {
             style={{ width: 40, height: 40, borderRadius: 20 }}
           />
           <View style={{ marginLeft: 12 }}>
-            <Text style={{ fontSize: 14, fontWeight: "600" }}>
-              Nguyễn Văn B
-            </Text>
+            <Text style={{ fontSize: 14, fontWeight: "600" }}>Nguyễn Văn B</Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
               Đại học điện lực
             </Text>

@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity, View, Platform } from 'react-native';
 import Home from '../screens/(tabs)/Home/index';
 import Library from '../screens/(tabs)/Library/index';
-import Exam from '../screens/(tabs)/Exam/detail/[id]';
+import Exam from '../screens/(tabs)/detail/[id]';
 import Notification from '../screens/(tabs)/Notification/index';
 import Profile from '../screens/(tabs)/Profile/profile';
 import { useNavigation } from '@react-navigation/native';
@@ -50,7 +50,7 @@ export default function BottomTabs() {
         component={Exam}
         options={{
           tabBarIcon: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('ExamCreate')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Tạo đề thi')}>
               <View style={styles.centerButton}>
                 <View style={styles.centerCircle}>
                   <Ionicons name="add" size={50} color="white" />
@@ -74,9 +74,7 @@ export default function BottomTabs() {
         component={Profile}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('ProfileDetail')}>
               <Ionicons name="person-sharp" size={30} color={change(focused)} />
-            </TouchableOpacity>
           ),
         }}
       />

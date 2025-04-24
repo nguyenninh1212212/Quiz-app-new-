@@ -43,7 +43,7 @@ export default function HomeScreen() {
               padding: 12,
               marginTop: 12,
             }}
-            onPress={() => navigation.navigate("_search")} // thay vì dùng route.push("/Home/_search")
+            onPress={() => navigation.navigate("Tìm kiếm")} // thay vì dùng route.push("/Home/_search")
           >
             <Feather name="search" size={20} color="gray" />
             <Text style={{ marginLeft: 8, color: "#6B7280" }}>

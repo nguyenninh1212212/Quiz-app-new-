@@ -1,15 +1,16 @@
 import React, { useCallback } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
+import { useNavigation } from '@react-navigation/native';  // Import useNavigation
 
-const QuizCard = ({ data, navigation }) => {
+const QuizCard = ({ data }) => {
+  const navigation = useNavigation();  // Lấy navigation bằng hook
 
-  const handleCardPress = useCallback(() => {
-    navigation.navigate("Exam", { id: "456" });
-  }, [navigation]);
+  const handleCardPress = () => {
+    navigation.navigate("Đề thi", { id: "456" });
+  }
 
   const handleProfilePress = useCallback(() => {
-    console.log("Avatar clicked, navigating to Channel");
     navigation.navigate("Channel");
   }, [navigation]);
 
