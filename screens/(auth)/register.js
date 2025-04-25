@@ -4,29 +4,38 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 
 const SocialButton = ({ title, color, textColor, onPress }) => (
   <TouchableOpacity
-    className={`bg-${color} p-3 rounded-full w-full`}
+    style={{
+      backgroundColor: color,
+      padding: 12,
+      borderRadius: 999,
+      width: "100%",
+    }}
     onPress={onPress}
   >
-    <Text className={`text-${textColor} self-center`}>{title}</Text>
+    <Text style={{ color: textColor, textAlign: "center" }}>{title}</Text>
   </TouchableOpacity>
 );
 
 const RegisterScreen = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    fullname: "",
+    age: "",
     email: "",
+    phoneNumber: "",
+    username: "",
     password: "",
     confirmPassword: "",
   });
+  
   const [secureText, setSecureText] = useState(true);
+  const navigation = useNavigation(); // Use useNavigation for navigation
 
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -39,50 +48,132 @@ const RegisterScreen = () => {
       return;
     }
 
-    console.log("Register Data:", formData);
-    // Thực hiện đăng ký ở đây, ví dụ gọi API
+    navigation.navigate("login"); // Điều hướng đến màn hình đăng nhập
   };
 
   return (
-    <View className="flex-1 bg-primary_100 justify-center items-center px-5">
-      <View className="w-full max-w-md p-6 rounded-lg shadow-md">
-        <Text className="text-2xl font-bold text-center text-yellow-400 mb-4">
+    <View style={{ justifyContent: "center", alignItems: "center", flex: 1 ,backgroundColor: "#383e6e"}}>
+      <View
+        style={{
+          width: "100%",
+          paddingHorizontal: 24,
+          borderRadius: 8,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            textAlign: "center",
+            color: "#F59E0B", // yellow-400
+            marginBottom: 16,
+          }}
+        >
           Đăng ký
         </Text>
 
         {/* Username */}
-        <View className="mb-3">
-          <Text className="text-gray-300 mb-1">Nhập tên tài khoản</Text>
+        <View style={{ marginBottom: 12 }}>
+          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Nhập tên tài khoản</Text>
           <TextInput
-            className="w-full bg-primary_250 text-white px-3 py-3 rounded-full"
+            style={{
+              width: "100%",
+              backgroundColor: "white", // Màu nền trắng
+              color: "black", // Màu chữ đen
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+              borderRadius: 25, // Updated borderRadius for consistency
+            }}
             placeholder="Nhập tài khoản..."
-            placeholderTextColor="#bbb"
+            placeholderTextColor="#BDBDBD"
             value={formData.username}
             onChangeText={(text) => handleChange("username", text)}
           />
         </View>
 
         {/* Email */}
-        <View className="mb-3">
-          <Text className="text-gray-300 mb-1">Email</Text>
+        <View style={{ marginBottom: 12 }}>
+          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Email</Text>
           <TextInput
-            className="w-full bg-primary_250 text-white px-3 py-3 rounded-full"
+            style={{
+              width: "100%",
+              backgroundColor: "white", // Màu nền trắng
+              color: "black", // Màu chữ đen
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+              borderRadius: 25, // Updated borderRadius for consistency
+            }}
             placeholder="Nhập email..."
-            placeholderTextColor="#bbb"
+            placeholderTextColor="#BDBDBD"
             keyboardType="email-address"
             value={formData.email}
             onChangeText={(text) => handleChange("email", text)}
           />
         </View>
 
+        {/* Age & Phone Number - same row */}
+<View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 12 }}>
+  {/* Age */}
+  <View style={{ flex: 1, marginRight: 6 }}>
+    <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Tuổi</Text>
+    <TextInput
+      style={{
+        backgroundColor: "white",
+        color: "black",
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 25,
+      }}
+      placeholder="Tuổi..."
+      placeholderTextColor="#BDBDBD"
+      keyboardType="numeric"
+      value={formData.age}
+      onChangeText={(text) => handleChange("age", text)}
+    />
+  </View>
+
+  {/* Phone Number */}
+  <View style={{ flex: 1, marginLeft: 6 }}>
+    <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Số điện thoại</Text>
+    <TextInput
+      style={{
+        backgroundColor: "white",
+        color: "black",
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 25,
+      }}
+      placeholder="Số điện thoại..."
+      placeholderTextColor="#BDBDBD"
+      keyboardType="phone-pad"
+      value={formData.phoneNumber}
+      onChangeText={(text) => handleChange("phoneNumber", text)}
+    />
+  </View>
+</View>
+
+
         {/* Password */}
-        <View className="mb-3">
-          <Text className="text-gray-300 mb-1">Mật khẩu</Text>
-          <View className="flex-row items-center bg-primary_250 rounded-full px-3 py-2">
+        <View style={{ marginBottom: 12 }}>
+          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Mật khẩu</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "white", // Màu nền trắng
+              borderRadius: 25,
+              paddingVertical: 8,
+              paddingHorizontal: 16,
+            }}
+          >
             <TextInput
-              className="flex-1 text-white py-2"
+              style={{ flex: 1, color: "black", paddingVertical: 8 }} // Màu chữ đen
               placeholder="Nhập mật khẩu..."
-              placeholderTextColor="#bbb"
+              placeholderTextColor="#BDBDBD"
               secureTextEntry={secureText}
               value={formData.password}
               onChangeText={(text) => handleChange("password", text)}
@@ -91,19 +182,26 @@ const RegisterScreen = () => {
               <MaterialIcons
                 name={secureText ? "visibility-off" : "visibility"}
                 size={24}
-                color="white"
+                color="black" // Màu icon đen
               />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Confirm Password */}
-        <View className="mb-3">
-          <Text className="text-gray-300 mb-1">Nhập lại mật khẩu</Text>
+        <View style={{ marginBottom: 12 }}>
+          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Nhập lại mật khẩu</Text>
           <TextInput
-            className="w-full bg-primary_250 text-white px-3 py-3 rounded-full"
+            style={{
+              width: "100%",
+              backgroundColor: "white", // Màu nền trắng
+              color: "black", // Màu chữ đen
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+              borderRadius: 25, // Updated borderRadius for consistency
+            }}
             placeholder="Nhập lại mật khẩu..."
-            placeholderTextColor="#bbb"
+            placeholderTextColor="#BDBDBD"
             secureTextEntry
             value={formData.confirmPassword}
             onChangeText={(text) => handleChange("confirmPassword", text)}
@@ -112,22 +210,53 @@ const RegisterScreen = () => {
 
         {/* Submit Button */}
         <TouchableOpacity
-          className="w-full bg-yellow-400 py-2 rounded-full items-center mt-4"
+          style={{
+            width: "100%",
+            backgroundColor: "#F59E0B", // yellow-400
+            paddingVertical: 12,
+            borderRadius: 25, // Updated borderRadius for consistency
+            alignItems: "center",
+            marginTop: 16,
+          }}
           onPress={handleSubmit}
         >
-          <Text className="text-gray-900 font-bold text-lg">Đăng ký</Text>
+          <Text style={{ color: "#111827", fontWeight: "bold", fontSize: 18 }}>
+            Đăng ký
+          </Text>
         </TouchableOpacity>
 
         {/* Link to login */}
-        <Link href="/(auth)/login" className="text-yellow-400 self-center mt-4">
-          Đã có tài khoản?
-        </Link>
+        <TouchableOpacity onPress={() => navigation.navigate("login")}>
+          <Text
+            style={{
+              color: "#F59E0B", // yellow-400
+              textAlign: "center",
+              marginTop: 16,
+            }}
+          >
+            Đã có tài khoản?
+          </Text>
+        </TouchableOpacity>
 
         {/* Social buttons */}
-        <Text className="text-center text-gray-300 my-2">hoặc đăng ký với</Text>
-        <View className="flex-col justify-center space-x-5 gap-3">
+        <Text
+          style={{
+            textAlign: "center",
+            color: "#D1D5DB",
+            marginVertical: 12,
+          }}
+        >
+          hoặc đăng ký với
+        </Text>
+        <View
+          style={{
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 12,
+          }}
+        >
           <SocialButton title="Google" color="white" textColor="black" onPress={() => {}} />
-          <SocialButton title="Facebook" color="blue-600" textColor="white" onPress={() => {}} />
+          <SocialButton title="Facebook" color="#3B82F6" textColor="white" onPress={() => {}} />
         </View>
       </View>
     </View>

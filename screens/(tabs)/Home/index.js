@@ -69,7 +69,7 @@ export default function HomeScreen() {
               marginBottom: 8,
             }}
           >
-            Đề đã làm
+            Đề mới
           </Text>
           <View
             style={{

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import { Avatar } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons"; // Make sure to install expo/vector-icons
-import { fakeQuizCreatedData } from "@/fakedata"; // Import fake data or real data from your API
+import { fakeQuizCreatedData } from "../../../fakedata"; // Import fake data or real data from your API
 import QuizCard from "../../../components/Card/QuizCard"; // Adjust the import path as needed
 
 const ChannelScreen = ({ navigation }) => {

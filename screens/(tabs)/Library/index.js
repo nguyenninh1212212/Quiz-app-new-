@@ -162,10 +162,9 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flexDirection: "column",
-    paddingBottom: 16,
+    padding: 10,
     justifyContent: "space-around",
     alignContent: "center",
-    marginRight: 16,
   },
   cardContainer: {
     paddingHorizontal: 8,

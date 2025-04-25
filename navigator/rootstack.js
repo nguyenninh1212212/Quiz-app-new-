@@ -8,6 +8,9 @@ import Result from "../screens/(tabs)/detail/result"
 import Exam from '../screens/(tabs)/Exam/[id]';
 import ExamDetail from '../screens/(tabs)/detail/[id]';
 import Search from '../screens/(tabs)/Home/_search'
+import Channel from '../screens/(tabs)/Channel/ChannelScreen';
+import Login from '../screens/(auth)/login';
+import Register from '../screens/(auth)/register';
 
 
 const Stack = createNativeStackNavigator();
@@ -15,6 +18,7 @@ const Stack = createNativeStackNavigator();
 export default function RootStack() {
   return (
     <Stack.Navigator
+    initialRouteName="login" 
     screenOptions={{
       
       headerStyle: {
@@ -34,6 +38,18 @@ export default function RootStack() {
       <Stack.Screen name="Làm câu hỏi" component={ExamDetail} />
       <Stack.Screen name="Đề thi" component={Exam} />
       <Stack.Screen name="Tìm kiếm" component={Search} />
+      <Stack.Screen name="Đề thi của tôi" component={Channel} />
+        {/* Trang đăng nhập và đăng ký */}
+        <Stack.Screen 
+        name="login" 
+        component={Login} 
+        options={{ headerShown: false }} // Hiển thị header cho trang login
+      />
+      <Stack.Screen 
+        name="register" 
+        component={Register} 
+        options={{ headerShown:false }} // Hiển thị header cho trang register
+      />
     </Stack.Navigator>
   );
 }
