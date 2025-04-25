@@ -8,7 +8,8 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native"; // Import useNavigation
-
+import { useMutation } from "@tanstack/react-query";
+import { register } from "../../api/auth";
 const SocialButton = ({ title, color, textColor, onPress }) => (
   <TouchableOpacity
     style={{
@@ -41,14 +42,28 @@ const RegisterScreen = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  
+  const mutation = useMutation({
+    mutationFn: (data) => register(data),
+    onSuccess: async (data) => {
+      Alert.alert("Đăng ký thành công");
+    navigation.navigate("login"); // Điều hướng đến màn hình đăng nhập
+
+    },
+    onError: (error) => {
+      console.log("🚀 ~ Login ~ error:", error);
+      Alert.alert("Lỗi Đăng ký", "Thông tin đăng ký không đúng.");
+    },
+  });
+  
+  
+
   const handleSubmit = () => {
-    // Kiểm tra mật khẩu và mật khẩu xác nhận
     if (formData.password !== formData.confirmPassword) {
       Alert.alert("Lỗi", "Mật khẩu và mật khẩu xác nhận không khớp!");
       return;
     }
-
-    navigation.navigate("login"); // Điều hướng đến màn hình đăng nhập
+        mutation.mutate(formData); // Không cần await
   };
 
   return (

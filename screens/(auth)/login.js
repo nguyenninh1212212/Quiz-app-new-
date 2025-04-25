@@ -5,6 +5,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../api/auth"; // Đường dẫn đến file auth.js trong api folder
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext"; // Đường dẫn đến AuthContext
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,24 +14,29 @@ export default function Login() {
   const [secureText, setSecureText] = useState(true);
   const navigation = useNavigation(); // Sử dụng hook để điều hướng
 
+  const { login: loginContext } = useContext(AuthContext);
+
   const mutation = useMutation({
-    mutationFn: (data) => login(data), // Chuyển hàm login vào đây
-    onSuccess: (data) => {
+    mutationFn: (data) => login(data),
+    onSuccess: async (data) => {
+      const token = data.data.accessToken;
+      await loginContext(token); // Gọi login từ context
       Alert.alert("Đăng nhập thành công", "Chào mừng bạn trở lại!");
-      navigation.navigate("Quay lại"); // Chuyển trang sau khi đăng nhập thành công
     },
     onError: (error) => {
+      console.log("🚀 ~ Login ~ error:", error);
       Alert.alert("Lỗi đăng nhập", "Thông tin đăng nhập không đúng.");
     },
   });
-
-  const handleLogin = () => {
+  
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Vui lòng nhập đầy đủ tài khoản và mật khẩu");
-      return; // Dừng lại nếu thiếu thông tin
+      return;
     }
-    mutation.mutate({ username: email, password }); // Thực hiện login
+    mutation.mutate({ username: email, password }); // Không cần await
   };
+  
 
   return (
     <View style={styles.container}>

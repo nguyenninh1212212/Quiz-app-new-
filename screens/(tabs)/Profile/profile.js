@@ -1,8 +1,24 @@
-import React from "react";
+import React ,{ useContext } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../../context/AuthContext"; // Đường dẫn đến AuthContext
+
+
 
 export default function ProfileScreen() {
+  const { logout: logout} = useContext(AuthContext);
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token'); 
+      logout();
+    } catch (error) {
+      console.error('Lỗi khi đăng xuất:', error);
+    }
+  };
+  
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
@@ -37,9 +53,10 @@ export default function ProfileScreen() {
         </View>
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton}>
-          <Text style={styles.logoutButtonText}>Đăng xuất</Text>
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+  <Text style={styles.logoutButtonText}>Đăng xuất</Text>
+</TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
