@@ -3,11 +3,12 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';  // Import useNavigation
 
-const QuizCard = ({ data }) => {
-  const navigation = useNavigation();  // Lấy navigation bằng hook
+const QuizCard = ({ data ,navigation}) => {
+    const { createdAt,auth,subject,school,cover,title ,avatar,id} = data;
+    console.log("🚀 ~ QuizCard ~ avatar:", avatar)
 
   const handleCardPress = () => {
-    navigation.navigate("Đề thi", { id: "456" });
+    navigation.navigate("Đề thi", { id: id });
   }
 
   const handleProfilePress = useCallback(() => {
@@ -15,67 +16,71 @@ const QuizCard = ({ data }) => {
   }, [navigation]);
 
   return (
-    <TouchableOpacity
+<TouchableOpacity
+  style={{
+    backgroundColor: "white",
+    borderRadius: 16,
+    marginVertical: 12,
+    padding: 0,
+    height: 100,
+    overflow: "hidden",
+    flexDirection: "row",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  }}
+  onPress={handleCardPress}
+>
+  {/* Ảnh bên trái */}
+  <View style={{ width: 120, height: "100%" }}>
+    <Image
+      source={{ uri: cover }}
       style={{
-        backgroundColor: "white",
-        borderRadius: 16,
-        paddingVertical: 4,
-        marginVertical: 12,
-        paddingHorizontal: 8,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
+        width: "100%",
+        height: "100%",
+        borderTopLeftRadius: 16,
+        borderBottomLeftRadius: 16,
       }}
-      onPress={handleCardPress}
+      resizeMode="cover"
+    />
+  </View>
+
+  {/* Nội dung bên phải */}
+  <View style={{ flex: 1, padding: 12, justifyContent: "space-evenly" ,gap: 2 }}>
+    <Text style={{ fontSize: 14, lineHeight: 18, fontWeight: "bold", color: "#1a202c" }}>
+      {title}
+    </Text>
+
+    <View
+      style={{
+        backgroundColor: "#fbbf24",
+        borderRadius: 9999,
+        paddingVertical: 2,
+        paddingHorizontal: 6,
+        alignSelf: "flex-start",
+      }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        {/* Hình ảnh logo bên trái */}
-        <Image
-          source={{
-            uri: "https://cdn.iconscout.com/icon/free/png-256/html5-40-1175193.png",
-          }}
-          style={{ width: 64, height: 64 }}
-          resizeMode="contain"
+      <Text style={{ fontSize: 10, fontWeight: "bold", color: "#2d3748" }}>
+        {subject}
+      </Text>
+    </View>
+
+    <View style={{ flexDirection: "row", alignItems: "center"}}>
+      <TouchableOpacity onPress={handleProfilePress}>
+        <Avatar.Image
+          source={{ uri:avatar }}
+          size={30}
         />
-
-        {/* Nội dung chính */}
-        <View style={{ flex: 1, marginLeft: 16 }}>
-          <Text style={{ fontSize: 14, lineHeight: 18, fontWeight: "bold", color: "#1a202c" }}>
-            What is HTML, CSS?
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}>
-            {/* Make the avatar clickable */}
-            <TouchableOpacity onPress={handleProfilePress}>
-              <Avatar.Image
-                source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
-                size={30}
-              />
-            </TouchableOpacity>
-            <View style={{ marginLeft: 12 }}>
-              <Text style={{ fontSize: 12, fontWeight: "600", color: "#2d3748" }}>
-                Nguyễn Văn B
-              </Text>
-              <Text style={{ fontSize: 12, color: "#718096" }}>Đại học điện lực</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Điểm số */}
-        <View
-          style={{
-            backgroundColor: "#fbbf24", // Tương đương với bg-yellow-400
-            borderRadius: 9999,
-            paddingVertical: 4,
-            paddingHorizontal: 8,
-          }}
-        >
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#2d3748" }}>
-            26/30
-          </Text>
-        </View>
+      </TouchableOpacity>
+      <View style={{ marginLeft: 12 }}>
+        <Text style={{ fontSize: 10, fontWeight: "600", color: "#2d3748" }}>{auth}</Text>
+        <Text style={{ fontSize: 10, color: "#718096" }}>{school}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
+  </View>
+</TouchableOpacity>
+
   );
 };
 

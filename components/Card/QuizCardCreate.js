@@ -2,11 +2,11 @@ import React, { useCallback } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 const QuizCardCreate = ({ data, navigation }) => {
-  const { title, user, questions, image } = data;
+  const { createdAt,auth,subject,school,cover,title ,avatar,id} = data;
 
   const handleCardPress = useCallback(() => {
     // Điều hướng đến màn hình "Exam" với id "1"
-    navigation.navigate("Exam", { id: "1" });
+    navigation.navigate("Exam", { id: id });
   }, [navigation]);
 
   const handleProfilePress = useCallback(() => {
@@ -31,7 +31,7 @@ const QuizCardCreate = ({ data, navigation }) => {
       onPress={handleCardPress}
     >
       <Image
-        source={{ uri: image }}
+        source={{ uri: cover}}
         style={{
           width: "100%",
           height: 112,
@@ -39,12 +39,12 @@ const QuizCardCreate = ({ data, navigation }) => {
       />
 
       {/* Nội dung Card */}
-      <View style={{ padding: 8, flex: 1, justifyContent: "space-between", backgroundColor: "#f7fafc" }}>
+      <View style={{ padding: 8, flex: 1, justifyContent: "space-evenly", backgroundColor: "#f7fafc" }}>
         {/* Thông tin người tạo */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={handleProfilePress}>
             <Image
-              source={{ uri: user.avatar }}
+              source={{ uri:avatar}}
               style={{
                 width: 32,
                 height: 32,
@@ -53,17 +53,15 @@ const QuizCardCreate = ({ data, navigation }) => {
             />
           </TouchableOpacity>
           <View style={{ marginLeft: 8 }}>
-            <Text style={{ color: "black", fontWeight: "bold", fontSize: 8 }}>
-              {user.name}
-            </Text>
+            
             <Text style={{ color: "#a0aec0", fontSize: 10 }}>
-              {user.university}
+              {school}
             </Text>
           </View>
         </View>
 
         {/* Nội dung đề thi */}
-        <Text style={{ color: "black", fontWeight: "600", marginTop: 4, fontSize: 12, textOverflow: "ellipsis" }}>
+        <Text style={{ color: "black", fontWeight: "600",  fontSize: 12, textOverflow: "ellipsis" }}>
           {title}
         </Text>
 
@@ -78,8 +76,8 @@ const QuizCardCreate = ({ data, navigation }) => {
             alignSelf: "flex-start",
           }}
         >
-          <Text style={{ color: "white", fontWeight: "600", fontSize: 12 }}>
-            {questions} câu
+          <Text style={{ color: "white", fontSize: 10 }}>
+            {subject}
           </Text>
         </View>
       </View>

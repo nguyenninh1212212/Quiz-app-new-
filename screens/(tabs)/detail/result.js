@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native"; // Import useNavigatio
 const ResultScreen = ({ route }) => {
   const navigation = useNavigation(); // Hook navigation
 
+  const id = route.params.id  // Lấy params từ route
   const numScore = Number(route.params.score || "0");  // Lấy params từ route
   const numCorrect = Number(route.params.correctAnswers || "0");
   const numTotal = Number(route.params.totalQuestions || "0");
@@ -84,7 +85,8 @@ const ResultScreen = ({ route }) => {
         {/* Nút xác nhận */}
         <TouchableOpacity 
           style={{ backgroundColor: "#FBBF24", width: "100%", paddingVertical: 16, borderRadius: 16, alignItems: "center" }}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.replace("Đề thi", { id: id })}  // Sử dụng replace thay vì navigate
+          // Chuyển hướng về trang Home
         >
           <Text style={{ color: "black", fontSize: 18, fontWeight: "bold" }}>Xác nhận</Text>
         </TouchableOpacity>

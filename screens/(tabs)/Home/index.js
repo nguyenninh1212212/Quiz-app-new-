@@ -11,10 +11,19 @@ import QuizCard from "../../../components/Card/QuizCard";
 import QuizCardCreate from "../../../components/Card/QuizCardCreate";
 import { fakeQuizCreatedData } from "../../../fakedata";
 import { useNavigation } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import { getHome } from "../../../api/exam";
+
+
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-
+  const {data:ele,isLoading: eload} = useQuery({
+    queryKey:["eleExam"],
+    queryFn:()=> getHome()
+  });
+  const exams=ele?.data?.exams || [];
+  const list=ele?.data?.myList || [];
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#002060" }}>
       {/* Header */}
@@ -79,8 +88,7 @@ export default function HomeScreen() {
               minHeight: 200,
             }}
           >
-            {Array(3)
-              .fill(null)
+            {exams
               .map((_, index) => (
                 <QuizCard key={index} data={_} navigation={navigation}/>
               ))}
@@ -99,7 +107,7 @@ export default function HomeScreen() {
           </Text>
           <View style={{ paddingBottom: 160 }}>
             <FlatList
-              data={fakeQuizCreatedData}
+              data={list}
               numColumns={2} // 2 phần tử trên mỗi dòng
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => <QuizCardCreate data={item} />}

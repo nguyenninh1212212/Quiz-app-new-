@@ -8,18 +8,42 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
+import { useNavigation,useRoute } from "@react-navigation/native"; // Import the useNavigation hook
+import { useQuery } from "@tanstack/react-query";
+import { getDetailExam } from "../../../api/exam"; // Đường dẫn đến file exam.js trong api folder
+
 
 const Exam = () => {
   const [activeTab, setActiveTab] = useState(false);
   const navigation = useNavigation(); // Initialize the navigation hook
+  const route = useRoute();
+  const { id } = route.params;
+  const {data,isLoading} = useQuery({
+   queryKey: ["exam", id],
+  queryFn: () => getDetailExam(id),
+  })
+  const examDetail = data?.data; // vì response có `data` bên trong
+
+  const {
+    id: examId,
+    title,
+    cover,
+    school,
+    subject,
+    auth,
+    createdAt,
+    avatar,
+    quest,
+  } = examDetail || {};
 
   const onPress = useCallback(() => {
-    navigation.navigate("Làm câu hỏi", { id: "1" }); // Navigate to Detail screen
+    navigation.navigate("Làm câu hỏi", { id:id ,quest}); // Navigate to Detail screen
   }, [navigation]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164",padding:16 }}>
+
+
       <ScrollView
         style={{
           backgroundColor: "#f4f4f4",
@@ -29,10 +53,12 @@ const Exam = () => {
           
         }}
       >
+    
+
         <View style={{ backgroundColor: "#e1e1e1", borderRadius: 16 }}>
           <Image
             source={{
-              uri: "https://topviecit.vn/blog/wp-content/uploads/2021/11/thumb-5.jpg",
+              uri: cover,
             }}
             style={{ width: "100%", height: 224, borderRadius: 16 }}
             resizeMode="cover"
@@ -40,7 +66,15 @@ const Exam = () => {
         </View>
 
         <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 16 }}>
-          What is HTML, CSS?
+          {title}
+        </Text>
+        <Text style={{   backgroundColor: "#fbbf24",
+                borderRadius: 9999,
+                paddingVertical: 2,
+                paddingHorizontal: 6,
+                alignSelf: "flex-start",
+                marginTop:10}}>
+          {subject}
         </Text>
 
         <View
@@ -101,13 +135,13 @@ const Exam = () => {
           style={{ flexDirection: "row", alignItems: "center", marginTop: 16 }}
         >
           <Image
-            source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
+            source={{ uri: avatar }}
             style={{ width: 40, height: 40, borderRadius: 20 }}
           />
           <View style={{ marginLeft: 12 }}>
-            <Text style={{ fontSize: 14, fontWeight: "600" }}>Nguyễn Văn B</Text>
+            <Text style={{ fontSize: 14, fontWeight: "600" }}>{auth}</Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
-              Đại học điện lực
+              {school}
             </Text>
           </View>
         </View>
@@ -157,7 +191,32 @@ const Exam = () => {
         {/* Hiển thị nội dung theo tab */}
         <View style={{ padding: 16 }}>
           {activeTab === false ? (
-            <Text style={{ color: "#4B4B4B" }}>Nội dung bài kiểm tra...</Text>
+              <View>
+              {
+                quest?.slice(0,4).map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 12,
+                    padding: 16,
+                    marginBottom: 16,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                    {item.question}
+                  </Text>
+                  <View style={{ marginTop: 8 }}>{item.answer.map((a,i)=>   <Text key={i} style={{ fontSize: 16 }}>
+                    {a}
+                  </Text>)}</View>
+                </View>
+              )) 
+              }
+
+          <Text style={{ fontSize: 14,margin:16,textAlign:"center",color:"#1E90FF"}} onPress={onPress}>
+                  Vào làm bài kiểm tra để xem nội dung câu hỏi
+                </Text>
+              </View> 
           ) : (
             <Text style={{ color: "#4B4B4B" }}>Kết quả bài kiểm tra...</Text>
           )}

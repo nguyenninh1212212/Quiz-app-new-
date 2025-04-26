@@ -1,170 +1,206 @@
-  import React, { useState, useEffect } from "react";
-  import { View, Text, TouchableOpacity, SafeAreaView, Alert,ScrollView } from "react-native";
-  import { Ionicons } from "@expo/vector-icons";
-  import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, SafeAreaView, Alert, ScrollView } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-  // Sample questions
-  const questions = [
-    {
-      id: 1,
-      question: "An angle whose value is ___, is called a complete angle.",
-      options: ["Maharashtra", "Odisha", "Assam", "Tamil Nadu"],
-      correctAnswer: "Odisha",
-    },
-    {
-      id: 2,
-      question: "What is the capital of France?",
-      options: ["Berlin", "Madrid", "Paris", "Lisbon"],
-      correctAnswer: "Paris",
-    },
-  ];
+// Mô phỏng dữ liệu câu hỏi
+const QuizScreen = () => {
+  const route = useRoute();
+  const { id, quest } = route.params;
+  const questions = quest;
 
-  const QuizScreen = () => {
-    const navigation = useNavigation();
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [selectedAnswers, setSelectedAnswers] = useState(
-      Array(questions.length).fill(null)
-    );
-    const [timeLeft, setTimeLeft] = useState(120); // 2 phút (120 giây)
+  const navigation = useNavigation();
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
 
-    useEffect(() => {
-      const timer = setInterval(() => {
-        setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-      }, 1000);
+  useEffect(() => {
+    if (questions?.length) {
+      setSelectedAnswers(Array(questions.length).fill([])); // Khởi tạo mảng các mảng rỗng
+    }
+  }, [questions]);
 
-      if (timeLeft === 0) {
-        handleSubmit();
+  const [timeLeft, setTimeLeft] = useState(questions?.length * 60); // 2 phút (120 giây)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    if (timeLeft === 0) {
+      handleSubmit();
+    }
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const handleAnswerSelect = (option) => {
+    setSelectedAnswers((prevAnswers) => {
+      const updatedAnswers = [...prevAnswers];
+      const currentSelected = updatedAnswers[currentQuestion] || [];
+
+      if (currentSelected.length >= questions[currentQuestion].correct.length) {
+        return prevAnswers; // Nếu đã chọn đủ đáp án, không cho chọn thêm
       }
 
-      return () => clearInterval(timer);
-    }, [timeLeft]);
+      updatedAnswers[currentQuestion] = [...currentSelected, option];
+      return updatedAnswers;
+    });
+  };
 
-    const handleNext = () => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-      }
-    };
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    }
+  };
 
-    const handlePrev = () => {
-      if (currentQuestion > 0) {
-        setCurrentQuestion(currentQuestion - 1);
-      }
-    };
+  const handlePrev = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    }
+  };
 
-    const handleAnswerSelect = (option) => {
-      const newSelectedAnswers = [...selectedAnswers];
-      newSelectedAnswers[currentQuestion] = option;
-      setSelectedAnswers(newSelectedAnswers);
-    };
+  const countCorrectAnswers = () => {
+    return questions.filter((q, index) => {
+      const selected = selectedAnswers[index] || [];
+      return q.correct.every((answer) => selected.includes(answer)) && selected.length === q.correct.length;
+    }).length;
+  };
 
-    const countCorrectAnswers = () => {
-      return questions.filter(
-        (q, index) => q.correctAnswer === selectedAnswers[index]
-      ).length;
-    };
+  const handleSubmit = () => {
+    // Kiểm tra nếu còn câu chưa trả lời
+    const unansweredQuestions = selectedAnswers.filter((answer) => answer.length === 0);
 
-    const handleSubmit = () => {
-      const correctAnswers = countCorrectAnswers();
-      const score = correctAnswers * 10 || 0;
-      const totalQuestions = questions.length;
+    if (unansweredQuestions.length > 0) {
+      Alert.alert(
+        "Chưa trả lời hết câu hỏi",
+        "Bạn có chắc muốn nộp bài không?",
+        [
+          { text: "Hủy", style: "cancel" },
+          { text: "Nộp bài", onPress: () => submitQuiz() },
+        ]
+      );
+    } else {
+      submitQuiz();
+    }
+  };
 
-      navigation.navigate("Kết quả", {
-        score: `${score}`,
-        correctAnswers: `${correctAnswers}`,
-        totalQuestions: `${totalQuestions}`,
-      });
-    };
+  const submitQuiz = () => {
+    const correctAnswers = countCorrectAnswers();
+    const totalQuestions = questions.length;
 
-    const handleNextQuestion = () => {
-      if (!selectedAnswers[currentQuestion]) {
-        Alert.alert("Warning", "Please select an answer before proceeding.");
-      } else {
-        handleNext();
-      }
-    };
+    // Tính điểm dựa trên phần trăm cho mỗi câu hỏi
+    const scorePerQuestion = 100 / totalQuestions;
+    const score = Math.ceil(correctAnswers * scorePerQuestion); // Làm tròn lên điểm
 
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164" }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 16 }}>
-          {/* Đồng hồ đếm và nút nộp bài */}
-          <View
-            style={{
-              backgroundColor: "yellow",
-              paddingHorizontal: 16,
-              paddingVertical: 8,
-              borderRadius: 10,
-            }}
-          >
-            <Text style={{ color: "black", fontWeight: "bold" }}>
-              Thời gian: {Math.floor(timeLeft / 60)}p {timeLeft % 60}s
-            </Text>
-          </View>
-    
+    navigation.replace("Kết quả", {
+      score: `${score}`,
+      correctAnswers: `${correctAnswers}`,
+      totalQuestions: `${totalQuestions}`,
+      id: id,
+    });
+  };
+
+  const handleNextQuestion = () => {
+    // Không cần kiểm tra việc chọn đáp án trước khi chuyển câu
+    handleNext();
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164" }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 16 }}>
+        {/* Đồng hồ đếm và nút nộp bài */}
+        <View
+          style={{
+            backgroundColor: "yellow",
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ color: "black", fontWeight: "bold" }}>
+            Thời gian: {Math.floor(timeLeft / 60)}p {timeLeft % 60}s
+          </Text>
+        </View>
+
+
+      </View>
+
+      {/* Bọc phần nội dung chính bằng ScrollView */}
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: 24,
+          flexGrow: 1,
+        }}
+      >
+        {/* Hiển thị câu hỏi hiện tại và các đáp án */}
+        {questions.length > 0 && questions[currentQuestion] && (
+          <>
+            {/* Câu hỏi */}
+            <View style={{ backgroundColor: "#4F6D7A", padding: 16, borderRadius: 8, marginTop: 16 }}>
+              <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
+                Câu {currentQuestion + 1}/{questions.length}: {questions[currentQuestion].question}
+              </Text>
+            </View>
+
+            {/* Đáp án */}
+            {questions[currentQuestion].answer.map((option, index) => {
+              const isSelected = selectedAnswers[currentQuestion]?.includes(option);
+              const isCorrect = questions[currentQuestion].correct.includes(option);
+              const backgroundColor = isSelected
+                ? isCorrect
+                  ? "green"
+                  : "red"
+                : "#2E3A59"; // Màu mặc định
+              const borderColor = isSelected
+                ? isCorrect
+                  ? "darkgreen"
+                  : "darkred"
+                : "#1C2A3D";
+
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={{
+                    marginTop: 12,
+                    paddingVertical: 30,
+                    paddingHorizontal: 16,
+                    borderRadius: 8,
+                    borderWidth: 2,
+                    backgroundColor,
+                    borderColor,
+                  }}
+                  onPress={() => handleAnswerSelect(option)}
+                >
+                  <Text style={{ color: "white", fontSize: 18 }}>{option}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </>
+        )}
+
+        {/* Nút điều hướng câu hỏi */}
+        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 24 }}>
           <TouchableOpacity
             style={{
-              backgroundColor: "pink",
+              backgroundColor: "blue",
               paddingHorizontal: 16,
               paddingVertical: 8,
               borderRadius: 8,
-              width: "27%",
+              width: "48%",
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={handleSubmit}
+            onPress={handlePrev}
+            disabled={currentQuestion === 0}
           >
-            <Text style={{ color: "white", fontWeight: "600" }}>Nộp bài</Text>
+            <Text style={{ color: "white", fontWeight: "600" }}>Câu trước</Text>
           </TouchableOpacity>
-        </View>
-    
-        {/* 👉 Bọc phần nội dung chính bằng ScrollView */}
-        <ScrollView
-          contentContainerStyle={{
-            paddingHorizontal: 16,
-            paddingBottom: 24,
-            flexGrow: 1,
-          }}
-        >
-          {/* Câu hỏi */}
-          <View style={{ backgroundColor: "#4F6D7A", padding: 16, borderRadius: 8, marginTop: 16 }}>
-            <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
-              {questions[currentQuestion].question}
-            </Text>
-          </View>
-    
-          {/* Đáp án */}
-          {questions[currentQuestion].options.map((option, index) => (
-            <TouchableOpacity
-              key={index}
-              style={{
-                marginTop: 12,
-                paddingVertical: 30,
-                paddingHorizontal: 16,
-                borderRadius: 8,
-                borderWidth: 2,
-                backgroundColor:
-                  selectedAnswers[currentQuestion] === option
-                    ? option === questions[currentQuestion].correctAnswer
-                      ? "green"
-                      : "red"
-                    : "#2E3A59",
-                borderColor:
-                  selectedAnswers[currentQuestion] === option
-                    ? option === questions[currentQuestion].correctAnswer
-                      ? "darkgreen"
-                      : "darkred"
-                    : "#1C2A3D",
-              }}
-              onPress={() => handleAnswerSelect(option)}
-            >
-              <Text style={{ color: "white", fontSize: 18 }}>{option}</Text>
-            </TouchableOpacity>
-          ))}
-    
-          {/* Nút điều hướng câu hỏi */}
-          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 24 }}>
+
+          {currentQuestion === questions.length - 1 ? (
             <TouchableOpacity
               style={{
-                backgroundColor: "blue",
+                backgroundColor: "pink",
                 paddingHorizontal: 16,
                 paddingVertical: 8,
                 borderRadius: 8,
@@ -172,31 +208,30 @@
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={handlePrev}
-              disabled={currentQuestion === 0}
+              onPress={handleSubmit}
             >
-              <Text style={{ color: "white", fontWeight: "600" }}>Prev Question</Text>
+              <Text style={{ color: "white", fontWeight: "600" }}>Nộp bài</Text>
             </TouchableOpacity>
-    
+          ) : (
             <TouchableOpacity
               style={{
                 backgroundColor: "yellow",
                 paddingHorizontal: 16,
-                paddingVertical: 20   ,
+                paddingVertical: 20,
                 borderRadius: 8,
                 width: "48%",
                 alignItems: "center",
                 justifyContent: "center",
               }}
               onPress={handleNextQuestion}
-              disabled={currentQuestion === questions.length - 1}
             >
-              <Text style={{ color: "black", fontWeight: "600" }}>Next Question</Text>
+              <Text style={{ color: "black", fontWeight: "600" }}>Câu tiếp theo</Text>
             </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  };
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
-  export default QuizScreen;
+export default QuizScreen;
