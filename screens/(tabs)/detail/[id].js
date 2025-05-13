@@ -8,13 +8,14 @@ const QuizScreen = () => {
   const route = useRoute();
   const { id, quest } = route.params;
   const questions = quest;
+  console.log("🚀 ~ QuizScreen ~ quest:", quest)
 
   const navigation = useNavigation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
 
   useEffect(() => {
-    if (questions?.length) {
+    if (questions?.length || 0) {
       setSelectedAnswers(Array(questions.length).fill([])); // Khởi tạo mảng các mảng rỗng
     }
   }, [questions]);
@@ -33,22 +34,29 @@ const QuizScreen = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  const handleAnswerSelect = (option) => {
-    setSelectedAnswers((prevAnswers) => {
-      const updatedAnswers = [...prevAnswers];
-      const currentSelected = updatedAnswers[currentQuestion] || [];
+const handleAnswerSelect = (option) => {
+  setSelectedAnswers((prevAnswers) => {
+    const updatedAnswers = [...prevAnswers];
+    const currentSelected = updatedAnswers[currentQuestion] || [];
 
-      if (currentSelected.length >= questions[currentQuestion].correct.length) {
-        return prevAnswers; // Nếu đã chọn đủ đáp án, không cho chọn thêm
-      }
+    if (currentSelected?.length >= questions[currentQuestion].correct?.length) {
+      return prevAnswers; // Nếu đã chọn đủ đáp án, không cho chọn thêm
+    }
 
-      updatedAnswers[currentQuestion] = [...currentSelected, option];
-      return updatedAnswers;
-    });
-  };
+    updatedAnswers[currentQuestion] = [...currentSelected, option];
+    return updatedAnswers;
+  });
+
+  // Đợi 1 giây (1000ms) trước khi chuyển câu
+  setTimeout(() => {
+    if (currentQuestion < questions?.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    }
+  }, 1000);
+};
 
   const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < questions?.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
   };
@@ -62,7 +70,7 @@ const QuizScreen = () => {
   const countCorrectAnswers = () => {
     return questions.filter((q, index) => {
       const selected = selectedAnswers[index] || [];
-      return q.correct.every((answer) => selected.includes(answer)) && selected.length === q.correct.length;
+      return q.correct.every((answer) => selected.includes(answer)) && selected?.length === q.correct?.length;
     }).length;
   };
 
@@ -70,7 +78,7 @@ const QuizScreen = () => {
     // Kiểm tra nếu còn câu chưa trả lời
     const unansweredQuestions = selectedAnswers.filter((answer) => answer.length === 0);
 
-    if (unansweredQuestions.length > 0) {
+    if (unansweredQuestions?.length > 0) {
       Alert.alert(
         "Chưa trả lời hết câu hỏi",
         "Bạn có chắc muốn nộp bài không?",
@@ -86,7 +94,7 @@ const QuizScreen = () => {
 
   const submitQuiz = () => {
     const correctAnswers = countCorrectAnswers();
-    const totalQuestions = questions.length;
+    const totalQuestions = questions?.length;
 
     // Tính điểm dựa trên phần trăm cho mỗi câu hỏi
     const scorePerQuestion = 100 / totalQuestions;
@@ -134,12 +142,12 @@ const QuizScreen = () => {
         }}
       >
         {/* Hiển thị câu hỏi hiện tại và các đáp án */}
-        {questions.length > 0 && questions[currentQuestion] && (
+        {questions?.length > 0 && questions[currentQuestion] && (
           <>
             {/* Câu hỏi */}
             <View style={{ backgroundColor: "#4F6D7A", padding: 16, borderRadius: 8, marginTop: 16 }}>
               <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
-                Câu {currentQuestion + 1}/{questions.length}: {questions[currentQuestion].question}
+                Câu {currentQuestion + 1}/{questions?.length}: {questions[currentQuestion].question}
               </Text>
             </View>
 
@@ -197,7 +205,7 @@ const QuizScreen = () => {
             <Text style={{ color: "white", fontWeight: "600" }}>Câu trước</Text>
           </TouchableOpacity>
 
-          {currentQuestion === questions.length - 1 ? (
+          {currentQuestion === questions?.length - 1 ? (
             <TouchableOpacity
               style={{
                 backgroundColor: "pink",

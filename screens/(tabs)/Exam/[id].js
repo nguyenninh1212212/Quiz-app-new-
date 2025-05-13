@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation,useRoute } from "@react-navigation/native"; // Import the useNavigation hook
@@ -18,12 +19,16 @@ const Exam = () => {
   const navigation = useNavigation(); // Initialize the navigation hook
   const route = useRoute();
   const { id } = route.params;
-  const {data,isLoading} = useQuery({
+  const {data,isLoading,error} = useQuery({
    queryKey: ["exam", id],
   queryFn: () => getDetailExam(id),
   })
   const examDetail = data?.data; // vì response có `data` bên trong
 
+
+  
+   
+  
   const {
     id: examId,
     title,
@@ -36,10 +41,31 @@ const Exam = () => {
     quest,
   } = examDetail || {};
 
+
+
   const onPress = useCallback(() => {
     navigation.navigate("Làm câu hỏi", { id:id ,quest}); // Navigate to Detail screen
   }, [navigation]);
 
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#002060" }}>
+        <ActivityIndicator size="large" color="white" />
+      </SafeAreaView>
+    );
+  }
+  
+  if (error) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#002060" }}>
+        <Text style={{ color: "white", fontSize: 18, textAlign: "center", padding: 20 }}>
+          Đã xảy ra lỗi khi tải dữ liệu.
+        </Text>
+      </SafeAreaView>
+    );
+  }
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164",padding:16 }}>
 

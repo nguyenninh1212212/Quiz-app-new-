@@ -22,7 +22,6 @@ export const getEleExam = async () => {
   
 export const createExam = async (formData) => {
 
-    formData.append('examData', JSON.stringify(examData));
   
       const res = await api.post('/exams/cre', formData, {
         headers: {

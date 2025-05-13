@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';  // Import useNavigati
 
 const QuizCard = ({ data ,navigation}) => {
     const { createdAt,auth,subject,school,cover,title ,avatar,id} = data;
-    console.log("🚀 ~ QuizCard ~ avatar:", avatar)
 
   const handleCardPress = () => {
     navigation.navigate("Đề thi", { id: id });
@@ -35,7 +34,7 @@ const QuizCard = ({ data ,navigation}) => {
   {/* Ảnh bên trái */}
   <View style={{ width: 120, height: "100%" }}>
     <Image
-      source={{ uri: cover }}
+      source={{ uri: cover || "https://tesolcourse.edu.vn/wp-content/uploads/2022/02/2-2.jpg" }}
       style={{
         width: "100%",
         height: "100%",
@@ -48,7 +47,9 @@ const QuizCard = ({ data ,navigation}) => {
 
   {/* Nội dung bên phải */}
   <View style={{ flex: 1, padding: 12, justifyContent: "space-evenly" ,gap: 2 }}>
-    <Text style={{ fontSize: 14, lineHeight: 18, fontWeight: "bold", color: "#1a202c" }}>
+    <Text style={{ fontSize: 12, lineHeight: 18, fontWeight: "bold", color: "#1a202c" }}
+      numberOfLines={1} 
+    >
       {title}
     </Text>
 
@@ -61,7 +62,7 @@ const QuizCard = ({ data ,navigation}) => {
         alignSelf: "flex-start",
       }}
     >
-      <Text style={{ fontSize: 10, fontWeight: "bold", color: "#2d3748" }}>
+      <Text style={{ fontSize: 8, fontWeight: "bold", color: "#2d3748" }}>
         {subject}
       </Text>
     </View>
@@ -69,7 +70,7 @@ const QuizCard = ({ data ,navigation}) => {
     <View style={{ flexDirection: "row", alignItems: "center"}}>
       <TouchableOpacity onPress={handleProfilePress}>
         <Avatar.Image
-          source={{ uri:avatar }}
+          source={{ uri:avatar || "https://png.pngtree.com/png-vector/20190909/ourmid/pngtree-outline-user-icon-png-image_1727916.jpg"  }}
           size={30}
         />
       </TouchableOpacity>

@@ -28,14 +28,15 @@ export default function BottomTabs() {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Ionicons name="home" size={30} color={change(focused)} />
-          ),
-        }}
-      />
+  name="Home"
+  component={Home}
+  options={{
+    tabBarIcon: ({ focused }) => (
+      <Ionicons name="home" size={30} color={change(focused)} />
+    ),
+  }}
+/>
+
       <Tab.Screen
         name="Library"
         component={Library}

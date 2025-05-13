@@ -11,7 +11,6 @@ const ResultScreen = ({ route }) => {
   const numCorrect = Number(route.params.correctAnswers || "0");
   const numTotal = Number(route.params.totalQuestions || "0");
 
-  // Tính toán tỷ lệ hoàn thành
   const completionPercentage = Math.round((numCorrect / numTotal) * 100) || 0;
   
   return (
