@@ -1,6 +1,13 @@
 // src/screens/Auth/Login.js
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
@@ -28,7 +35,7 @@ export default function Login() {
       Alert.alert("Lỗi đăng nhập", "Thông tin đăng nhập không đúng.");
     },
   });
-  
+
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Vui lòng nhập đầy đủ tài khoản và mật khẩu");
@@ -36,7 +43,6 @@ export default function Login() {
     }
     mutation.mutate({ username: email, password }); // Không cần await
   };
-  
 
   return (
     <View style={styles.container}>
@@ -109,11 +115,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#F59E0B", // yellow-400
+    color: "#ffd800", // yellow-400
     marginBottom: 24,
   },
   labelText: {
-    color: "#F59E0B", // yellow-400
+    color: "#ffd800", // yellow-400
     marginBottom: 8,
   },
   input: {
@@ -138,12 +144,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   forgotPasswordText: {
-    color: "#F59E0B", // yellow-400
+    color: "#ffd800", // yellow-400
     textAlign: "right",
     marginVertical: 16,
   },
   loginButton: {
-    backgroundColor: "#F59E0B", // yellow-400
+    backgroundColor: "#ffd800", // yellow-400
     alignItems: "center",
     borderRadius: 25,
     paddingVertical: 16,
@@ -159,7 +165,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   registerLinkText: {
-    color: "#F59E0B", // yellow-400
+    color: "#ffd800", // yellow-400
     marginLeft: 8,
   },
 });

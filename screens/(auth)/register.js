@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 import { useMutation } from "@tanstack/react-query";
@@ -34,7 +28,7 @@ const RegisterScreen = () => {
     password: "",
     confirmPassword: "",
   });
-  
+
   const [secureText, setSecureText] = useState(true);
   const navigation = useNavigation(); // Use useNavigation for navigation
 
@@ -42,32 +36,35 @@ const RegisterScreen = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  
   const mutation = useMutation({
     mutationFn: (data) => register(data),
     onSuccess: async (data) => {
       Alert.alert("Đăng ký thành công");
-    navigation.navigate("login"); // Điều hướng đến màn hình đăng nhập
-
+      navigation.navigate("login"); // Điều hướng đến màn hình đăng nhập
     },
     onError: (error) => {
       console.log("🚀 ~ Login ~ error:", error);
       Alert.alert("Lỗi Đăng ký", "Thông tin đăng ký không đúng.");
     },
   });
-  
-  
 
   const handleSubmit = () => {
     if (formData.password !== formData.confirmPassword) {
       Alert.alert("Lỗi", "Mật khẩu và mật khẩu xác nhận không khớp!");
       return;
     }
-        mutation.mutate(formData); // Không cần await
+    mutation.mutate(formData); // Không cần await
   };
 
   return (
-    <View style={{ justifyContent: "center", alignItems: "center", flex: 1 ,backgroundColor: "#383e6e"}}>
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        backgroundColor: "#383e6e",
+      }}
+    >
       <View
         style={{
           width: "100%",
@@ -84,7 +81,7 @@ const RegisterScreen = () => {
             fontSize: 24,
             fontWeight: "bold",
             textAlign: "center",
-            color: "#F59E0B", // yellow-400
+            color: "#ffd800", // yellow-400
             marginBottom: 16,
           }}
         >
@@ -93,7 +90,9 @@ const RegisterScreen = () => {
 
         {/* Username */}
         <View style={{ marginBottom: 12 }}>
-          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Nhập tên tài khoản</Text>
+          <Text style={{ color: "#ffd800", marginBottom: 4 }}>
+            Nhập tên tài khoản
+          </Text>
           <TextInput
             style={{
               width: "100%",
@@ -112,7 +111,7 @@ const RegisterScreen = () => {
 
         {/* Email */}
         <View style={{ marginBottom: 12 }}>
-          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Email</Text>
+          <Text style={{ color: "#ffd800", marginBottom: 4 }}>Email</Text>
           <TextInput
             style={{
               width: "100%",
@@ -131,50 +130,57 @@ const RegisterScreen = () => {
         </View>
 
         {/* Age & Phone Number - same row */}
-<View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 12 }}>
-  {/* Age */}
-  <View style={{ flex: 1, marginRight: 6 }}>
-    <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Tuổi</Text>
-    <TextInput
-      style={{
-        backgroundColor: "white",
-        color: "black",
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderRadius: 25,
-      }}
-      placeholder="Tuổi..."
-      placeholderTextColor="#BDBDBD"
-      keyboardType="numeric"
-      value={formData.age}
-      onChangeText={(text) => handleChange("age", text)}
-    />
-  </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 12,
+          }}
+        >
+          {/* Age */}
+          <View style={{ flex: 1, marginRight: 6 }}>
+            <Text style={{ color: "#ffd800", marginBottom: 4 }}>Tuổi</Text>
+            <TextInput
+              style={{
+                backgroundColor: "white",
+                color: "black",
+                paddingVertical: 12,
+                paddingHorizontal: 16,
+                borderRadius: 25,
+              }}
+              placeholder="Tuổi..."
+              placeholderTextColor="#BDBDBD"
+              keyboardType="numeric"
+              value={formData.age}
+              onChangeText={(text) => handleChange("age", text)}
+            />
+          </View>
 
-  {/* Phone Number */}
-  <View style={{ flex: 1, marginLeft: 6 }}>
-    <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Số điện thoại</Text>
-    <TextInput
-      style={{
-        backgroundColor: "white",
-        color: "black",
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderRadius: 25,
-      }}
-      placeholder="Số điện thoại..."
-      placeholderTextColor="#BDBDBD"
-      keyboardType="phone-pad"
-      value={formData.phoneNumber}
-      onChangeText={(text) => handleChange("phoneNumber", text)}
-    />
-  </View>
-</View>
-
+          {/* Phone Number */}
+          <View style={{ flex: 1, marginLeft: 6 }}>
+            <Text style={{ color: "#ffd800", marginBottom: 4 }}>
+              Số điện thoại
+            </Text>
+            <TextInput
+              style={{
+                backgroundColor: "white",
+                color: "black",
+                paddingVertical: 12,
+                paddingHorizontal: 16,
+                borderRadius: 25,
+              }}
+              placeholder="Số điện thoại..."
+              placeholderTextColor="#BDBDBD"
+              keyboardType="phone-pad"
+              value={formData.phoneNumber}
+              onChangeText={(text) => handleChange("phoneNumber", text)}
+            />
+          </View>
+        </View>
 
         {/* Password */}
         <View style={{ marginBottom: 12 }}>
-          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Mật khẩu</Text>
+          <Text style={{ color: "#ffd800", marginBottom: 4 }}>Mật khẩu</Text>
           <View
             style={{
               flexDirection: "row",
@@ -205,7 +211,9 @@ const RegisterScreen = () => {
 
         {/* Confirm Password */}
         <View style={{ marginBottom: 12 }}>
-          <Text style={{ color: "#F59E0B", marginBottom: 4 }}>Nhập lại mật khẩu</Text>
+          <Text style={{ color: "#ffd800", marginBottom: 4 }}>
+            Nhập lại mật khẩu
+          </Text>
           <TextInput
             style={{
               width: "100%",
@@ -227,7 +235,7 @@ const RegisterScreen = () => {
         <TouchableOpacity
           style={{
             width: "100%",
-            backgroundColor: "#F59E0B", // yellow-400
+            backgroundColor: "#ffd800", // yellow-400
             paddingVertical: 12,
             borderRadius: 25, // Updated borderRadius for consistency
             alignItems: "center",
@@ -244,7 +252,7 @@ const RegisterScreen = () => {
         <TouchableOpacity onPress={() => navigation.navigate("login")}>
           <Text
             style={{
-              color: "#F59E0B", // yellow-400
+              color: "#ffd800", // yellow-400
               textAlign: "center",
               marginTop: 16,
             }}
@@ -270,8 +278,18 @@ const RegisterScreen = () => {
             gap: 12,
           }}
         >
-          <SocialButton title="Google" color="white" textColor="black" onPress={() => {}} />
-          <SocialButton title="Facebook" color="#3B82F6" textColor="white" onPress={() => {}} />
+          <SocialButton
+            title="Google"
+            color="white"
+            textColor="black"
+            onPress={() => {}}
+          />
+          <SocialButton
+            title="Facebook"
+            color="#3B82F6"
+            textColor="white"
+            onPress={() => {}}
+          />
         </View>
       </View>
     </View>

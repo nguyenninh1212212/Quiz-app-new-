@@ -2,7 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { deleteFolder } from "../../api/folder";
-const FolderCard = ({ folder, onPress }) => {
+import { useNavigation } from "@react-navigation/native";
+
+const FolderCard = ({ folder }) => {
+  const navigation = useNavigation();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ["delete folder"],
@@ -13,9 +16,11 @@ const FolderCard = ({ folder, onPress }) => {
     },
     onError: () => Alert.alert("Thông báo", "xóa thất bại"),
   });
-  console.log("🚀 ~ FolderCard ~ folder.id:", folder);
   const onDelete = (id) => {
     mutation.mutate(id);
+  };
+  const onPress = () => {
+    navigation.navigate("Mục", { id: folder.id });
   };
 
   const handleLongPress = () => {

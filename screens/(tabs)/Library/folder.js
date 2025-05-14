@@ -36,7 +36,6 @@ const FolderScreen = () => {
 
   const hasMore = folders.length === size;
 
-  // Tích lũy dữ liệu thư mục
   useEffect(() => {
     if (page === 0) {
       setAllFolders(folders); // reset nếu quay lại trang đầu
@@ -95,12 +94,7 @@ const FolderScreen = () => {
         data={allFolders}
         page={page}
         setPage={setPage}
-        renderItem={({ item }) => (
-          <FolderCard
-            folder={item}
-            onPress={() => console.log("Navigate to folder detail:", item.id)}
-          />
-        )}
+        renderItem={({ item }) => <FolderCard folder={item} />}
         loading={isLoading}
         loadingMore={isFetching && page > 0}
         hasMore={hasMore}

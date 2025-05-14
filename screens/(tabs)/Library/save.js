@@ -11,11 +11,12 @@ import {
 } from "react-native";
 import QuizCard from "../../../components/Card/QuizCard";
 import { fakeQuizData } from "../../../fakedata";
+import { useNavigation } from "@react-navigation/native";
 
 const SaveTab = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All");
-
+  const navigate = useNavigation();
   const filteredData = fakeQuizData.filter((item) => {
     const matchesSubject =
       selectedFilter === "All" || item.subject === selectedFilter;
@@ -32,7 +33,7 @@ const SaveTab = () => {
       data={filteredData}
       renderItem={({ item }) => (
         <View style={styles.cardContainer}>
-          <QuizCard data={item} />
+          <QuizCard data={item} navigation={navigate} />
         </View>
       )}
       keyExtractor={(item) => item.id}

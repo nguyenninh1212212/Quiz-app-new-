@@ -1,48 +1,51 @@
-import React ,{ useContext } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import React, { useContext } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../context/AuthContext"; // Đường dẫn đến AuthContext
 
-
-
 export default function ProfileScreen() {
-  const { logout: logout} = useContext(AuthContext);
+  const { logout: logout } = useContext(AuthContext);
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('token'); 
+      await AsyncStorage.removeItem("token");
       logout();
     } catch (error) {
-      console.error('Lỗi khi đăng xuất:', error);
+      console.error("Lỗi khi đăng xuất:", error);
     }
   };
-  
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
-          {/* Avatar */}
-          <Image
-            source={{ uri: "https://i.pravatar.cc/100" }}
-            style={styles.avatar}
-          />
-          {/* Thông tin bên phải */}
-          <View style={styles.infoContainer}>
-            <Text style={styles.name}>Nguyễn Văn B</Text>
-            <View style={styles.premiumBadge}>
-              <Text style={styles.premiumText}>Premium</Text>
-            </View>
+        {/* Avatar */}
+        <Image
+          source={{ uri: "https://i.pravatar.cc/100" }}
+          style={styles.avatar}
+        />
+        {/* Thông tin bên phải */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.name}>Nguyễn Văn B</Text>
+          <View style={styles.premiumBadge}>
+            <Text style={styles.premiumText}>Premium</Text>
           </View>
-          {/* Edit Icon */}
-          <TouchableOpacity style={styles.editIcon}>
-            <Feather name="edit" size={20} color="white" />
-          </TouchableOpacity>
         </View>
+        {/* Edit Icon */}
+        <TouchableOpacity style={styles.editIcon}>
+          <Feather name="edit" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.container}>
-    
         {/* Info Section */}
         <View style={styles.infoSection}>
           <ProfileInfo label="Đang theo học tại:" value="Đại học điện lực" />
@@ -54,9 +57,8 @@ export default function ProfileScreen() {
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-  <Text style={styles.logoutButtonText}>Đăng xuất</Text>
-</TouchableOpacity>
-
+          <Text style={styles.logoutButtonText}>Đăng xuất</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -71,13 +73,13 @@ const ProfileInfo = ({ label, value }) => (
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1, backgroundColor: "#002060"
+    flex: 1,
+    backgroundColor: "#002060",
   },
   container: {
     flex: 1,
     padding: 16,
     backgroundColor: "#383e6e",
-
   },
   header: {
     backgroundColor: "#002060",

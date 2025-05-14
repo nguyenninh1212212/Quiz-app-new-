@@ -1,8 +1,14 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from "react-native";
 import { Avatar } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons"; // Make sure to install expo/vector-icons
-import { fakeQuizCreatedData } from "../../../fakedata"; // Import fake data or real data from your API
+import { fakeQuizData } from "../../../fakedata"; // Import fake data or real data from your API
 import QuizCard from "../../../components/Card/QuizCard"; // Adjust the import path as needed
 
 const ChannelScreen = ({ navigation }) => {
@@ -14,16 +20,9 @@ const ChannelScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.headerContainer}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="white" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Người tạo đề</Text>
-        </View>
-
         <View style={styles.profileContainer}>
           <Avatar.Image
-            size={120}
+            size={100}
             source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
             style={styles.avatar}
           />
@@ -34,9 +33,8 @@ const ChannelScreen = ({ navigation }) => {
       {/* Content section */}
       <View style={styles.contentContainer}>
         <Text style={styles.sectionTitle}>Đề thi</Text>
-        {/* Using FlatList for better performance */}
         <FlatList
-          data={fakeQuizCreatedData}  // Replace with actual data
+          data={fakeQuizData} // Replace with actual data
           renderItem={({ item }) => <QuizCard data={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -48,14 +46,7 @@ const ChannelScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#404f77",
-  },
-  headerContainer: {
-    backgroundColor: "#000947", // Dark blue as seen in your image
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    paddingBottom: 20,
-    overflow: "hidden",
+    backgroundColor: "#383e6e",
   },
   header: {
     flexDirection: "row",

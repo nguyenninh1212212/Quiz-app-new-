@@ -1,18 +1,44 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useCallback } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { Avatar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 
-const QuizCard = ({ data, navigation }) => {
-  const { createdAt, auth, subject, school, cover, title, avatar, id } = data;
-
+const QuizCardFolder = ({ data }) => {
+  const { id, title, subject, cover, auth, school, avatar } = data;
+  const navigation = useNavigation();
+  const onDelete = () => {
+    Alert.alert("Thông báo", "Đã xóa");
+  };
+  // Khi nhấn vào card: đi đến trang chi tiết đề thi
   const handleCardPress = () => {
-    navigation.navigate("Đề thi", { id: id });
+    navigation.navigate("Đề thi", { id });
   };
 
+  // Khi nhấn vào avatar người dùng: đi đến kênh cá nhân
   const handleProfilePress = useCallback(() => {
-    navigation.navigate("Kênh");
+    navigation.navigate("Channel");
   }, [navigation]);
+
+  // Khi giữ lâu: hỏi xác nhận xóa
+  const handleLongPress = () => {
+    Alert.alert(
+      "Xác nhận xóa",
+      "Bạn có chắc muốn xóa đề thi này?",
+      [
+        { text: "Hủy", style: "cancel" },
+        {
+          text: "Xóa",
+          style: "destructive",
+          onPress: () => {
+            if (onDelete) {
+              onDelete(id);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <TouchableOpacity
@@ -20,7 +46,6 @@ const QuizCard = ({ data, navigation }) => {
         backgroundColor: "white",
         borderRadius: 16,
         marginVertical: 12,
-        padding: 0,
         height: 100,
         overflow: "hidden",
         flexDirection: "row",
@@ -30,8 +55,9 @@ const QuizCard = ({ data, navigation }) => {
         shadowRadius: 5,
       }}
       onPress={handleCardPress}
+      onLongPress={handleLongPress}
     >
-      {/* Ảnh bên trái */}
+      {/* Ảnh bìa bên trái */}
       <View style={{ width: 120, height: "100%" }}>
         <Image
           source={{
@@ -54,12 +80,7 @@ const QuizCard = ({ data, navigation }) => {
         style={{ flex: 1, padding: 12, justifyContent: "space-evenly", gap: 2 }}
       >
         <Text
-          style={{
-            fontSize: 12,
-            lineHeight: 18,
-            fontWeight: "bold",
-            color: "#1a202c",
-          }}
+          style={{ fontSize: 12, fontWeight: "bold", color: "#1a202c" }}
           numberOfLines={1}
         >
           {title}
@@ -102,4 +123,4 @@ const QuizCard = ({ data, navigation }) => {
   );
 };
 
-export default QuizCard;
+export default QuizCardFolder;

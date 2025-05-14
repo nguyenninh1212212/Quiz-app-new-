@@ -14,6 +14,7 @@ import Register from "../screens/(auth)/register";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"; // Assuming you have an AuthContext to manage authentication state
 import { Feather } from "@expo/vector-icons";
+import Folder from "../screens/(tabs)/Library/[id]";
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
@@ -48,6 +49,7 @@ export default function RootStack() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Làm câu hỏi" component={ExamDetail} />
+
           <Stack.Screen
             name="Đề thi"
             component={Exam}
@@ -63,13 +65,28 @@ export default function RootStack() {
               ),
             })}
           />
+          <Stack.Screen
+            name="Mục"
+            component={Folder}
+            options={({ navigation }) => ({
+              presentation: "modal",
+              headerLeft: () => (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{ flexDirection: "row", alignItems: "center" }}
+                >
+                  <Feather name="chevron-left" size={28} color="#fff" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
 
           <Stack.Screen
             name="Tìm kiếm"
             component={Search}
             options={{ presentation: "modal" }} // 👈 quan trọng!
           />
-          <Stack.Screen name="Đề thi của tôi" component={Channel} />
+          <Stack.Screen name="Kênh" component={Channel} />
         </>
       ) : (
         <>
