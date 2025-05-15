@@ -11,9 +11,15 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../context/AuthContext"; // Đường dẫn đến AuthContext
-
+import { useQuery } from "@tanstack/react-query";
+import { getProfile } from "../../../api/auth";
 export default function ProfileScreen() {
   const { logout: logout } = useContext(AuthContext);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["profile"],
+    queryFn: () => getProfile(),
+  });
+  console.log("🚀 ~ ProfileScreen ~ data:", data);
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem("token");
@@ -34,7 +40,7 @@ export default function ProfileScreen() {
         />
         {/* Thông tin bên phải */}
         <View style={styles.infoContainer}>
-          <Text style={styles.name}>Nguyễn Văn B</Text>
+          <Text style={styles.name}>{data?.data}</Text>
           <View style={styles.premiumBadge}>
             <Text style={styles.premiumText}>Premium</Text>
           </View>

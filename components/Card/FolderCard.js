@@ -11,8 +11,9 @@ const FolderCard = ({ folder }) => {
     mutationKey: ["delete folder"],
     mutationFn: (id) => deleteFolder(id),
     onSuccess: () => {
-      Alert.alert("Thông báo", "xóa thành công");
       queryClient.invalidateQueries({ queryKey: ["folders"] });
+
+      Alert.alert("Thông báo", "xóa thành công");
     },
     onError: () => Alert.alert("Thông báo", "xóa thất bại"),
   });

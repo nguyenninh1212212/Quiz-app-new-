@@ -46,7 +46,7 @@ export default function RootStack() {
           <Stack.Screen
             name="Kết quả"
             component={Result}
-            options={{ headerShown: false }}
+            options={{ headerShown: false, gestureEnabled: false }}
           />
           <Stack.Screen name="Làm câu hỏi" component={ExamDetail} />
 

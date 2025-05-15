@@ -31,7 +31,7 @@ const RegisterScreen = () => {
 
   const [secureText, setSecureText] = useState(true);
   const navigation = useNavigation(); // Use useNavigation for navigation
-
+  handleSub;
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
@@ -49,11 +49,64 @@ const RegisterScreen = () => {
   });
 
   const handleSubmit = () => {
-    if (formData.password !== formData.confirmPassword) {
-      Alert.alert("Lỗi", "Mật khẩu và mật khẩu xác nhận không khớp!");
+    const {
+      fullname,
+      age,
+      email,
+      phoneNumber,
+      username,
+      password,
+      confirmPassword,
+    } = formData;
+
+    if (
+      !fullname ||
+      !age ||
+      !email ||
+      !phoneNumber ||
+      !username ||
+      !password ||
+      !confirmPassword
+    ) {
+      Alert.alert("Lỗi", "Vui lòng điền đầy đủ thông tin.");
       return;
     }
-    mutation.mutate(formData); // Không cần await
+
+    const ageNumber = parseInt(age);
+    if (isNaN(ageNumber) || ageNumber <= 0 || ageNumber > 100) {
+      Alert.alert("Lỗi", "Tuổi không hợp lệ. Tuổi phải là số ≤ 100.");
+      return;
+    }
+
+    if (!/^\d{11}$/.test(phoneNumber)) {
+      Alert.alert("Lỗi", "Số điện thoại phải gồm đúng 11 chữ số.");
+      return;
+    }
+
+    if (username.length < 6) {
+      Alert.alert("Lỗi", "Tên tài khoản phải có ít nhất 6 ký tự.");
+      return;
+    }
+
+    if (
+      password.length < 6 ||
+      !/[A-Z]/.test(password) ||
+      !/\d/.test(password)
+    ) {
+      Alert.alert(
+        "Lỗi",
+        "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa và số."
+      );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Lỗi", "Mật khẩu và xác nhận mật khẩu không khớp!");
+      return;
+    }
+
+    // Gửi form
+    mutation.mutate(formData);
   };
 
   return (
