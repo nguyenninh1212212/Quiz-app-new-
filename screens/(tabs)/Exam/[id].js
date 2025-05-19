@@ -6,29 +6,27 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation,useRoute } from "@react-navigation/native"; // Import the useNavigation hook
+import { useNavigation, useRoute } from "@react-navigation/native"; // Import the useNavigation hook
 import { useQuery } from "@tanstack/react-query";
 import { getDetailExam } from "../../../api/exam"; // Đường dẫn đến file exam.js trong api folder
-
+import Popup from "../../../components/popup/Popup";
+import AddToFolder from "../Library/AddToFolder";
 
 const Exam = () => {
   const [activeTab, setActiveTab] = useState(false);
+  const [open, setOpen] = useState(false);
   const navigation = useNavigation(); // Initialize the navigation hook
   const route = useRoute();
   const { id } = route.params;
-  const {data,isLoading,error} = useQuery({
-   queryKey: ["exam", id],
-  queryFn: () => getDetailExam(id),
-  })
-  const examDetail = data?.data; // vì response có `data` bên trong
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["exam", id],
+    queryFn: () => getDetailExam(id),
+  });
+  const examDetail = data?.data;
 
-
-  
-   
-  
   const {
     id: examId,
     title,
@@ -38,49 +36,65 @@ const Exam = () => {
     auth,
     createdAt,
     avatar,
-    quest,
   } = examDetail || {};
 
-
-
   const onPress = useCallback(() => {
-    navigation.navigate("Làm câu hỏi", { id:id ,quest}); // Navigate to Detail screen
+    navigation.navigate("Làm câu hỏi", { id: id }); 
   }, [navigation]);
-
 
   if (isLoading) {
     return (
-      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#002060" }}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#002060",
+        }}
+      >
         <ActivityIndicator size="large" color="white" />
       </SafeAreaView>
     );
   }
-  
+
   if (error) {
     return (
-      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#002060" }}>
-        <Text style={{ color: "white", fontSize: 18, textAlign: "center", padding: 20 }}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#002060",
+        }}
+      >
+        <Text
+          style={{
+            color: "white",
+            fontSize: 18,
+            textAlign: "center",
+            padding: 20,
+          }}
+        >
           Đã xảy ra lỗi khi tải dữ liệu.
         </Text>
       </SafeAreaView>
     );
   }
-  
+
+  const onOpenListFolder = () => {
+    setOpen(!open);
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164",padding:16 }}>
-
-
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164", padding: 16 }}>
       <ScrollView
         style={{
           backgroundColor: "#f4f4f4",
           flex: 1,
           padding: 16,
           borderRadius: 24,
-          
         }}
       >
-    
-
         <View style={{ backgroundColor: "#e1e1e1", borderRadius: 16 }}>
           <Image
             source={{
@@ -94,12 +108,16 @@ const Exam = () => {
         <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 16 }}>
           {title}
         </Text>
-        <Text style={{   backgroundColor: "#fbbf24",
-                borderRadius: 9999,
-                paddingVertical: 2,
-                paddingHorizontal: 6,
-                alignSelf: "flex-start",
-                marginTop:10}}>
+        <Text
+          style={{
+            backgroundColor: "#fbbf24",
+            borderRadius: 9999,
+            paddingVertical: 2,
+            paddingHorizontal: 6,
+            alignSelf: "flex-start",
+            marginTop: 10,
+          }}
+        >
           {subject}
         </Text>
 
@@ -151,6 +169,7 @@ const Exam = () => {
               shadowOpacity: 0.8,
               shadowRadius: 2,
             }}
+            onPress={onOpenListFolder}
           >
             <Text style={{ color: "black", fontWeight: "600" }}>Lưu</Text>
           </TouchableOpacity>
@@ -166,9 +185,7 @@ const Exam = () => {
           />
           <View style={{ marginLeft: 12 }}>
             <Text style={{ fontSize: 14, fontWeight: "600" }}>{auth}</Text>
-            <Text style={{ fontSize: 12, color: "gray" }}>
-              {school}
-            </Text>
+            <Text style={{ fontSize: 12, color: "gray" }}>{school}</Text>
           </View>
         </View>
 
@@ -217,9 +234,8 @@ const Exam = () => {
         {/* Hiển thị nội dung theo tab */}
         <View style={{ padding: 16 }}>
           {activeTab === false ? (
-              <View>
-              {
-                quest?.slice(0,4).map((item, index) => (
+            <View>
+              {quest?.slice(0, 4).map((item, index) => (
                 <View
                   key={index}
                   style={{
@@ -232,22 +248,38 @@ const Exam = () => {
                   <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                     {item.question}
                   </Text>
-                  <View style={{ marginTop: 8 }}>{item.answer.map((a,i)=>   <Text key={i} style={{ fontSize: 16 }}>
-                    {a}
-                  </Text>)}</View>
+                  <View style={{ marginTop: 8 }}>
+                    {item.answer.map((a, i) => (
+                      <Text key={i} style={{ fontSize: 16 }}>
+                        {a}
+                      </Text>
+                    ))}
+                  </View>
                 </View>
-              )) 
-              }
+              ))}
 
-          <Text style={{ fontSize: 14,margin:16,textAlign:"center",color:"#1E90FF"}} onPress={onPress}>
-                  Vào làm bài kiểm tra để xem nội dung câu hỏi
-                </Text>
-              </View> 
+              <Text
+                style={{
+                  fontSize: 14,
+                  margin: 16,
+                  textAlign: "center",
+                  color: "#1E90FF",
+                }}
+                onPress={onPress}
+              >
+                Vào làm bài kiểm tra để xem nội dung câu hỏi
+              </Text>
+            </View>
           ) : (
             <Text style={{ color: "#4B4B4B" }}>Kết quả bài kiểm tra...</Text>
           )}
         </View>
       </ScrollView>
+      <Popup
+        children={<AddToFolder idExam={id} />}
+        onClose={() => setOpen(!open)}
+        visible={open}
+      />
     </SafeAreaView>
   );
 };

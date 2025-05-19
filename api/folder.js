@@ -23,8 +23,6 @@ export const getFolderDetail = async (id) => {
 };
 
 export const addToFolder = async (folderId, examId) => {
-  const res = await api.post(`/folder/${folderId}/add`, null, {
-    params: { examId },
-  });
+  const res = await api.post(`/folder/${folderId}/add?examId=${examId}`);
   return res.data;
 };

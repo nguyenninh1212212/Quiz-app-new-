@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "@react-navigation/native";
@@ -18,7 +18,19 @@ const FolderScreen = () => {
     queryFn: () => getFolderDetail(id),
   });
 
-  const exams = folderData?.data?.exams || [];
+  const [exams, setExams] = useState([]);
+
+  // Khi folderData thay đổi, cập nhật lại exams state
+  useEffect(() => {
+    if (folderData?.data?.exams) {
+      setExams(folderData.data.exams);
+    }
+  }, [folderData]);
+
+  // Hàm xóa bài thi khỏi state và cập nhật UI
+  const handleDelete = (deleteId) => {
+    setExams((prevExams) => prevExams.filter((item) => item.id !== deleteId));
+  };
 
   return (
     <View style={styles.container}>
@@ -34,7 +46,12 @@ const FolderScreen = () => {
         <FlatList
           data={exams}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <QuizCardFolder data={item} />}
+          renderItem={({ item }) => (
+            <QuizCardFolder
+              data={item}
+              onDelete={() => handleDelete(item.id)}
+            />
+          )}
         />
       )}
     </View>

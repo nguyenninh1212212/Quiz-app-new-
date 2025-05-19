@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
 const api = axios.create({
-  baseURL: "http://192.168.50.254:8080",
+  baseURL: "http://192.168.50.27:8080",
   headers: {
     "Content-Type": "application/json",
   },

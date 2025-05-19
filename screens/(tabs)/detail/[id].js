@@ -1,14 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, SafeAreaView, Alert, ScrollView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { useRoute, useNavigation } from "@react-navigation/native";
 
 // Mô phỏng dữ liệu câu hỏi
 const QuizScreen = () => {
   const route = useRoute();
-  const { id, quest } = route.params;
-  const questions = quest;
-  console.log("🚀 ~ QuizScreen ~ quest:", quest)
+  const { id } = route.params;
+  const {
+    data: quest,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["exam", id],
+    queryFn: () => getDetailExam(id),
+  });
+  const questions = quest?.data.quest;
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#002060",
+        }}
+      >
+        <ActivityIndicator size="large" color="white" />
+      </SafeAreaView>
+    );
+  }
+
+  console.log("🚀 ~ QuizScreen ~ questions:", questions);
 
   const navigation = useNavigation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -34,26 +65,28 @@ const QuizScreen = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-const handleAnswerSelect = (option) => {
-  setSelectedAnswers((prevAnswers) => {
-    const updatedAnswers = [...prevAnswers];
-    const currentSelected = updatedAnswers[currentQuestion] || [];
+  const handleAnswerSelect = (option) => {
+    setSelectedAnswers((prevAnswers) => {
+      const updatedAnswers = [...prevAnswers];
+      const currentSelected = updatedAnswers[currentQuestion] || [];
 
-    if (currentSelected?.length >= questions[currentQuestion].correct?.length) {
-      return prevAnswers; // Nếu đã chọn đủ đáp án, không cho chọn thêm
-    }
+      if (
+        currentSelected?.length >= questions[currentQuestion].correct?.length
+      ) {
+        return prevAnswers; // Nếu đã chọn đủ đáp án, không cho chọn thêm
+      }
 
-    updatedAnswers[currentQuestion] = [...currentSelected, option];
-    return updatedAnswers;
-  });
+      updatedAnswers[currentQuestion] = [...currentSelected, option];
+      return updatedAnswers;
+    });
 
-  // Đợi 1 giây (1000ms) trước khi chuyển câu
-  setTimeout(() => {
-    if (currentQuestion < questions?.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    }
-  }, 1000);
-};
+    // Đợi 1 giây (1000ms) trước khi chuyển câu
+    setTimeout(() => {
+      if (currentQuestion < questions?.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      }
+    }, 1000);
+  };
 
   const handleNext = () => {
     if (currentQuestion < questions?.length - 1) {
@@ -70,13 +103,18 @@ const handleAnswerSelect = (option) => {
   const countCorrectAnswers = () => {
     return questions.filter((q, index) => {
       const selected = selectedAnswers[index] || [];
-      return q.correct.every((answer) => selected.includes(answer)) && selected?.length === q.correct?.length;
+      return (
+        q.correct.every((answer) => selected.includes(answer)) &&
+        selected?.length === q.correct?.length
+      );
     }).length;
   };
 
   const handleSubmit = () => {
     // Kiểm tra nếu còn câu chưa trả lời
-    const unansweredQuestions = selectedAnswers.filter((answer) => answer.length === 0);
+    const unansweredQuestions = selectedAnswers.filter(
+      (answer) => answer.length === 0
+    );
 
     if (unansweredQuestions?.length > 0) {
       Alert.alert(
@@ -115,7 +153,13 @@ const handleAnswerSelect = (option) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164" }}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 16 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 16,
+        }}
+      >
         {/* Đồng hồ đếm và nút nộp bài */}
         <View
           style={{
@@ -129,8 +173,6 @@ const handleAnswerSelect = (option) => {
             Thời gian: {Math.floor(timeLeft / 60)}p {timeLeft % 60}s
           </Text>
         </View>
-
-
       </View>
 
       {/* Bọc phần nội dung chính bằng ScrollView */}
@@ -145,16 +187,28 @@ const handleAnswerSelect = (option) => {
         {questions?.length > 0 && questions[currentQuestion] && (
           <>
             {/* Câu hỏi */}
-            <View style={{ backgroundColor: "#4F6D7A", padding: 16, borderRadius: 8, marginTop: 16 }}>
-              <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
-                Câu {currentQuestion + 1}/{questions?.length}: {questions[currentQuestion].question}
+            <View
+              style={{
+                backgroundColor: "#4F6D7A",
+                padding: 16,
+                borderRadius: 8,
+                marginTop: 16,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+              >
+                Câu {currentQuestion + 1}/{questions?.length}:{" "}
+                {questions[currentQuestion].question}
               </Text>
             </View>
 
             {/* Đáp án */}
             {questions[currentQuestion].answer.map((option, index) => {
-              const isSelected = selectedAnswers[currentQuestion]?.includes(option);
-              const isCorrect = questions[currentQuestion].correct.includes(option);
+              const isSelected =
+                selectedAnswers[currentQuestion]?.includes(option);
+              const isCorrect =
+                questions[currentQuestion].correct.includes(option);
               const backgroundColor = isSelected
                 ? isCorrect
                   ? "green"
@@ -188,7 +242,13 @@ const handleAnswerSelect = (option) => {
         )}
 
         {/* Nút điều hướng câu hỏi */}
-        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 24 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 24,
+          }}
+        >
           <TouchableOpacity
             style={{
               backgroundColor: "blue",
@@ -233,7 +293,9 @@ const handleAnswerSelect = (option) => {
               }}
               onPress={handleNextQuestion}
             >
-              <Text style={{ color: "black", fontWeight: "600" }}>Câu tiếp theo</Text>
+              <Text style={{ color: "black", fontWeight: "600" }}>
+                Câu tiếp theo
+              </Text>
             </TouchableOpacity>
           )}
         </View>

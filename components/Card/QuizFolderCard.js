@@ -3,23 +3,19 @@ import React, { useCallback } from "react";
 import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { Avatar } from "react-native-paper";
 
-const QuizCardFolder = ({ data }) => {
+const QuizCardFolder = ({ data, onDelete }) => {
   const { id, title, subject, cover, auth, school, avatar } = data;
   const navigation = useNavigation();
-  const onDelete = () => {
-    Alert.alert("Thông báo", "Đã xóa");
-  };
-  // Khi nhấn vào card: đi đến trang chi tiết đề thi
+
   const handleCardPress = () => {
     navigation.navigate("Đề thi", { id });
   };
 
-  // Khi nhấn vào avatar người dùng: đi đến kênh cá nhân
   const handleProfilePress = useCallback(() => {
     navigation.navigate("Channel");
   }, [navigation]);
 
-  // Khi giữ lâu: hỏi xác nhận xóa
+  // Khi giữ lâu: hỏi xác nhận xóa và gọi onDelete truyền từ cha
   const handleLongPress = () => {
     Alert.alert(
       "Xác nhận xóa",
@@ -55,16 +51,11 @@ const QuizCardFolder = ({ data }) => {
         shadowRadius: 5,
       }}
       onPress={handleCardPress}
-      onLongPress={handleLongPress}
+      onLongPress={handleLongPress} // Gọi khi giữ lâu
     >
-      {/* Ảnh bìa bên trái */}
       <View style={{ width: 120, height: "100%" }}>
         <Image
-          source={{
-            uri:
-              cover ||
-              "https://tesolcourse.edu.vn/wp-content/uploads/2022/02/2-2.jpg",
-          }}
+          source={{ uri: cover }}
           style={{
             width: "100%",
             height: "100%",
@@ -75,7 +66,6 @@ const QuizCardFolder = ({ data }) => {
         />
       </View>
 
-      {/* Nội dung bên phải */}
       <View
         style={{ flex: 1, padding: 12, justifyContent: "space-evenly", gap: 2 }}
       >
@@ -102,14 +92,7 @@ const QuizCardFolder = ({ data }) => {
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={handleProfilePress}>
-            <Avatar.Image
-              source={{
-                uri:
-                  avatar ||
-                  "https://png.pngtree.com/png-vector/20190909/ourmid/pngtree-outline-user-icon-png-image_1727916.jpg",
-              }}
-              size={30}
-            />
+            <Avatar.Image source={{ uri: avatar }} size={30} />
           </TouchableOpacity>
           <View style={{ marginLeft: 12 }}>
             <Text style={{ fontSize: 10, fontWeight: "600", color: "#2d3748" }}>
@@ -124,3 +107,4 @@ const QuizCardFolder = ({ data }) => {
 };
 
 export default QuizCardFolder;
+  
