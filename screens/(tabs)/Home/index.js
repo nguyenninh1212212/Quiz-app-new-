@@ -17,6 +17,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getHome } from "../../../api/exam";
 
 export default function HomeScreen() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
@@ -42,6 +45,13 @@ export default function HomeScreen() {
     await queryClient.invalidateQueries(["eleExam"]); // Thực hiện gọi lại API để tải lại dữ liệu
     setRefreshing(false);
   };
+
+  const paginatedList = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+
+    return list.slice(start, start + itemsPerPage);
+  }, [list, currentPage]);
+  const totalPages = Math.ceil(list.length / itemsPerPage);
 
   // Kiểm tra trạng thái loading và lỗi
   if (eload) {
@@ -93,6 +103,14 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </SafeAreaView>
     );
+  }
+
+  function splitListToPages(list, itemsPerPage) {
+    const result = [];
+    for (let i = 0; i < list.length; i += itemsPerPage) {
+      result.push(list.slice(i, i + itemsPerPage));
+    }
+    return result;
   }
 
   return (
@@ -190,7 +208,7 @@ export default function HomeScreen() {
             </Text>
             <View style={{ paddingBottom: 160, backgroundColor: "#383e6e" }}>
               <FlatList
-                data={list}
+                data={paginatedList}
                 numColumns={2}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
@@ -199,6 +217,40 @@ export default function HomeScreen() {
                 scrollEnabled={false}
                 nestedScrollEnabled={true}
               />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  marginTop: 16,
+                }}
+              >
+                {[...Array(totalPages)].map((_, index) => {
+                  const page = index + 1;
+                  return (
+                    <TouchableOpacity
+                      key={page}
+                      onPress={() => setCurrentPage(page)}
+                      style={{
+                        paddingVertical: 6,
+                        paddingHorizontal: 12,
+                        marginHorizontal: 4,
+                        borderRadius: 6,
+                        backgroundColor:
+                          currentPage === page ? "white" : "#4B5563",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: currentPage === page ? "#002060" : "white",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {page}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
           </View>
         </View>

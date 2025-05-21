@@ -40,7 +40,7 @@ export default function RootStack() {
           <Stack.Screen
             name="Tạo đề thi"
             component={ExamCreate}
-            options={{ presentation: "modal" }} // 👈 quan trọng!
+            options={{ presentation: "modal" }}
           />
           <Stack.Screen name="Profile" component={ProfileDetail} />
           <Stack.Screen

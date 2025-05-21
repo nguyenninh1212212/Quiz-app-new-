@@ -9,38 +9,40 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native"; // Import the useNavigation hook
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
-import { getDetailExam } from "../../../api/exam"; // Đường dẫn đến file exam.js trong api folder
+import { getDetailExam } from "../../../api/exam";
 import Popup from "../../../components/popup/Popup";
 import AddToFolder from "../Library/AddToFolder";
 
+const modes = ["exam", "practice"];
+
 const Exam = () => {
   const [activeTab, setActiveTab] = useState(false);
+  const [mode, setMode] = useState(modes[0]);
   const [open, setOpen] = useState(false);
-  const navigation = useNavigation(); // Initialize the navigation hook
+  const navigation = useNavigation();
   const route = useRoute();
   const { id } = route.params;
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["exam", id],
     queryFn: () => getDetailExam(id),
   });
+
   const examDetail = data?.data;
 
-  const {
-    id: examId,
-    title,
-    cover,
-    school,
-    subject,
-    auth,
-    createdAt,
-    avatar,
-  } = examDetail || {};
+  const { title, cover, school, subject, auth, avatar } = examDetail || {};
+
+  const quest = examDetail?.quest;
 
   const onPress = useCallback(() => {
-    navigation.navigate("Làm câu hỏi", { id: id }); 
-  }, [navigation]);
+    navigation.navigate("Làm câu hỏi", { id, mode });
+  }, [navigation, id, mode]);
+
+  const onOpenListFolder = () => {
+    setOpen(!open);
+  };
 
   if (isLoading) {
     return (
@@ -65,6 +67,7 @@ const Exam = () => {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "#002060",
+          padding: 20,
         }}
       >
         <Text
@@ -72,7 +75,6 @@ const Exam = () => {
             color: "white",
             fontSize: 18,
             textAlign: "center",
-            padding: 20,
           }}
         >
           Đã xảy ra lỗi khi tải dữ liệu.
@@ -80,10 +82,6 @@ const Exam = () => {
       </SafeAreaView>
     );
   }
-
-  const onOpenListFolder = () => {
-    setOpen(!open);
-  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164", padding: 16 }}>
@@ -97,9 +95,7 @@ const Exam = () => {
       >
         <View style={{ backgroundColor: "#e1e1e1", borderRadius: 16 }}>
           <Image
-            source={{
-              uri: cover,
-            }}
+            source={{ uri: cover }}
             style={{ width: "100%", height: 224, borderRadius: 16 }}
             resizeMode="cover"
           />
@@ -108,6 +104,7 @@ const Exam = () => {
         <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 16 }}>
           {title}
         </Text>
+
         <Text
           style={{
             backgroundColor: "#fbbf24",
@@ -137,6 +134,36 @@ const Exam = () => {
           <Text style={{ color: "gray" }}>100</Text>
         </View>
 
+        {/* Mode Selector */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginTop: 16,
+            backgroundColor: "#ffffff",
+            padding: 8,
+            borderRadius: 12,
+          }}
+        >
+          {modes.map((item) => (
+            <TouchableOpacity
+              key={item}
+              onPress={() => setMode(item)}
+              style={{
+                paddingVertical: 8,
+                paddingHorizontal: 16,
+                borderRadius: 9999,
+                backgroundColor: mode === item ? "#1E90FF" : "#dcdcdc",
+              }}
+            >
+              <Text style={{ color: mode === item ? "white" : "black" }}>
+                {item === "exam" ? "Thi thử" : "Luyện tập"}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Buttons Bắt đầu và Lưu */}
         <View
           style={{
             flexDirection: "row",
@@ -153,7 +180,7 @@ const Exam = () => {
               borderRadius: 12,
               alignItems: "center",
             }}
-            onPress={onPress} // Navigate to the Detail screen
+            onPress={onPress}
           >
             <Text style={{ color: "black", fontWeight: "600" }}>Bắt đầu</Text>
           </TouchableOpacity>
@@ -189,7 +216,7 @@ const Exam = () => {
           </View>
         </View>
 
-        {/* Tabs */}
+        {/* Tabs Nội dung và Kết quả */}
         <View
           style={{
             flexDirection: "row",
@@ -203,7 +230,6 @@ const Exam = () => {
               flex: 1,
               alignItems: "center",
               paddingBottom: 8,
-              fon: "bold",
               borderBottomWidth: activeTab === false ? 2 : 0,
               borderBottomColor: "#1E90FF",
             }}
@@ -219,7 +245,6 @@ const Exam = () => {
               flex: 1,
               alignItems: "center",
               paddingBottom: 8,
-              fontWeight: "bold",
               borderBottomWidth: activeTab === true ? 2 : 0,
               borderBottomColor: "#1E90FF",
             }}
@@ -231,7 +256,7 @@ const Exam = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Hiển thị nội dung theo tab */}
+        {/* Nội dung theo tab */}
         <View style={{ padding: 16 }}>
           {activeTab === false ? (
             <View>
@@ -275,6 +300,7 @@ const Exam = () => {
           )}
         </View>
       </ScrollView>
+
       <Popup
         children={<AddToFolder idExam={id} />}
         onClose={() => setOpen(!open)}

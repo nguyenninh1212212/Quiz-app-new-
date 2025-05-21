@@ -10,6 +10,7 @@ import { Avatar } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons"; // Make sure to install expo/vector-icons
 import { fakeQuizData } from "../../../fakedata"; // Import fake data or real data from your API
 import QuizCard from "../../../components/Card/QuizCard"; // Adjust the import path as needed
+import { useNavigation } from "@react-navigation/native";
 
 const ChannelScreen = ({ navigation }) => {
   const handleGoBack = () => {
@@ -35,7 +36,9 @@ const ChannelScreen = ({ navigation }) => {
         <Text style={styles.sectionTitle}>Đề thi</Text>
         <FlatList
           data={fakeQuizData} // Replace with actual data
-          renderItem={({ item }) => <QuizCard data={item} />}
+          renderItem={({ item }) => (
+            <QuizCard data={item} navigation={navigation} />
+          )}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>

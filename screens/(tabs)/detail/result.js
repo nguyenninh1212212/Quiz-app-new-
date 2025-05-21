@@ -228,21 +228,44 @@ const ResultScreen = ({ route }) => {
         </View>
 
         {/* Nút xác nhận */}
-        <TouchableOpacity
+        <View
           style={{
-            backgroundColor: "#FBBF24",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            gap: 20,
             width: "100%",
-            paddingVertical: 16,
-            borderRadius: 16,
-            alignItems: "center",
           }}
-          onPress={() => navigation.replace("Đề thi", { id: id })} // Sử dụng replace thay vì navigate
-          // Chuyển hướng về trang Home
         >
-          <Text style={{ color: "black", fontSize: 18, fontWeight: "bold" }}>
-            Xác nhận
-          </Text>
-        </TouchableOpacity>
+          {/* Nút xác nhận */}
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#ff1cb3",
+              padding: 16,
+              borderRadius: 16,
+              alignItems: "center",
+            }}
+            onPress={() => navigation.goBack()} // navigate với param reviewMode
+          >
+            <Text style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
+              Xem lại đề
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#FBBF24",
+              padding: 16,
+              borderRadius: 16,
+              alignItems: "center",
+            }}
+            onPress={() => navigation.navigate("Đề thi", { id: id })} // Sử dụng replace thay vì navigate
+            // Chuyển hướng về trang Home
+          >
+            <Text style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
+              Xác nhận
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

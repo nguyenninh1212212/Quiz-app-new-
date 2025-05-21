@@ -38,9 +38,14 @@ const FolderScreen = () => {
 
   useEffect(() => {
     if (page === 0) {
-      setAllFolders(folders); // reset nếu quay lại trang đầu
+      setAllFolders(folders);
     } else {
-      setAllFolders((prev) => [...prev, ...folders]);
+      setAllFolders((prev) => {
+        const newFolders = folders.filter(
+          (f) => !prev.some((p) => p.id === f.id)
+        );
+        return [...prev, ...newFolders];
+      });
     }
   }, [folders, page]);
 
