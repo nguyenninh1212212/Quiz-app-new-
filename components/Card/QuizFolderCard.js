@@ -1,18 +1,40 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useCallback } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { Avatar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 
-const QuizCard = ({ data, navigation }) => {
-  const { createdAt, auth, subject, school, cover, title, avatar, id } = data;
+const QuizCardFolder = ({ data, onDelete }) => {
+  const { id, title, subject, cover, auth, school, avatar } = data;
+  const navigation = useNavigation();
 
   const handleCardPress = () => {
-    navigation.navigate("Đề thi", { id: id });
+    navigation.navigate("Đề thi", { id });
   };
 
   const handleProfilePress = useCallback(() => {
-    navigation.navigate("Kênh");
+    navigation.navigate("Channel");
   }, [navigation]);
+
+  // Khi giữ lâu: hỏi xác nhận xóa và gọi onDelete truyền từ cha
+  const handleLongPress = () => {
+    Alert.alert(
+      "Xác nhận xóa",
+      "Bạn có chắc muốn xóa đề thi này?",
+      [
+        { text: "Hủy", style: "cancel" },
+        {
+          text: "Xóa",
+          style: "destructive",
+          onPress: () => {
+            if (onDelete) {
+              onDelete(id);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <TouchableOpacity
@@ -20,7 +42,6 @@ const QuizCard = ({ data, navigation }) => {
         backgroundColor: "white",
         borderRadius: 16,
         marginVertical: 12,
-        padding: 0,
         height: 100,
         overflow: "hidden",
         flexDirection: "row",
@@ -30,15 +51,11 @@ const QuizCard = ({ data, navigation }) => {
         shadowRadius: 5,
       }}
       onPress={handleCardPress}
+      onLongPress={handleLongPress} // Gọi khi giữ lâu
     >
-      {/* Ảnh bên trái */}
       <View style={{ width: 120, height: "100%" }}>
         <Image
-          source={{
-            uri:
-              cover ||
-              "https://tesolcourse.edu.vn/wp-content/uploads/2022/02/2-2.jpg",
-          }}
+          source={{ uri: cover }}
           style={{
             width: "100%",
             height: "100%",
@@ -49,17 +66,11 @@ const QuizCard = ({ data, navigation }) => {
         />
       </View>
 
-      {/* Nội dung bên phải */}
       <View
         style={{ flex: 1, padding: 12, justifyContent: "space-evenly", gap: 2 }}
       >
         <Text
-          style={{
-            fontSize: 12,
-            lineHeight: 18,
-            fontWeight: "bold",
-            color: "#1a202c",
-          }}
+          style={{ fontSize: 12, fontWeight: "bold", color: "#1a202c" }}
           numberOfLines={1}
         >
           {title}
@@ -81,14 +92,7 @@ const QuizCard = ({ data, navigation }) => {
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={handleProfilePress}>
-            <Avatar.Image
-              source={{
-                uri:
-                  avatar ||
-                  "https://png.pngtree.com/png-vector/20190909/ourmid/pngtree-outline-user-icon-png-image_1727916.jpg",
-              }}
-              size={30}
-            />
+            <Avatar.Image source={{ uri: avatar }} size={30} />
           </TouchableOpacity>
           <View style={{ marginLeft: 12 }}>
             <Text style={{ fontSize: 10, fontWeight: "600", color: "#2d3748" }}>
@@ -102,4 +106,5 @@ const QuizCard = ({ data, navigation }) => {
   );
 };
 
-export default QuizCard;
+export default QuizCardFolder;
+  

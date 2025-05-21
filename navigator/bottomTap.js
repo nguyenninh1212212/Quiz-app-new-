@@ -1,22 +1,22 @@
 // src/navigation/BottomTabs.js
-import React, { useState } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity, View, Platform } from 'react-native';
-import Home from '../screens/(tabs)/Home/index';
-import Library from '../screens/(tabs)/Library/index';
-import Exam from '../screens/(tabs)/Exam/detail/[id]';
-import Notification from '../screens/(tabs)/Notification/index';
-import Profile from '../screens/(tabs)/Profile/profile';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity, View, Platform } from "react-native";
+import Home from "../screens/(tabs)/Home/index";
+import Library from "../screens/(tabs)/Library/index";
+import Exam from "../screens/(tabs)/detail/[id]";
+import Notification from "../screens/(tabs)/Notification/index";
+import Profile from "../screens/(tabs)/Profile/profile";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
-  const [activeTab, setActiveTab] = useState('Home');
+  const [activeTab, setActiveTab] = useState("Home");
   const navigation = useNavigation();
 
-  const change = (focus) => (focus ? '#ffd800' : 'white');
+  const change = (focus) => (focus ? "#ffd800" : "white");
 
   return (
     <Tab.Navigator
@@ -36,6 +36,7 @@ export default function BottomTabs() {
           ),
         }}
       />
+
       <Tab.Screen
         name="Library"
         component={Library}
@@ -50,7 +51,7 @@ export default function BottomTabs() {
         component={Exam}
         options={{
           tabBarIcon: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('ExamCreate')}>
+            <TouchableOpacity onPress={() => navigation.navigate("Tạo đề thi")}>
               <View style={styles.centerButton}>
                 <View style={styles.centerCircle}>
                   <Ionicons name="add" size={50} color="white" />
@@ -74,9 +75,7 @@ export default function BottomTabs() {
         component={Profile}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('ProfileDetail')}>
-              <Ionicons name="person-sharp" size={30} color={change(focused)} />
-            </TouchableOpacity>
+            <Ionicons name="person-sharp" size={30} color={change(focused)} />
           ),
         }}
       />
@@ -85,28 +84,28 @@ export default function BottomTabs() {
 }
 
 const styles = {
-  position: 'absolute',
+  position: "absolute",
   bottom: 0,
   left: 0,
   right: 0,
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
   borderTopWidth: 0,
-  shadowColor: '#000',
+  shadowColor: "#000",
   shadowOffset: { width: 4, height: 4 },
   shadowOpacity: 0.1,
   shadowRadius: 5,
-  backgroundColor: '#454e91',
+  backgroundColor: "#454e91",
   height: 80,
 };
 
 styles.centerButton = {
-  backgroundColor: '#454e91',
+  backgroundColor: "#454e91",
   height: 80,
   width: 80,
-  alignItems: 'center',
-  justifyContent: 'center',
+  alignItems: "center",
+  justifyContent: "center",
   borderRadius: 40,
   marginBottom: 30,
 };
@@ -114,8 +113,8 @@ styles.centerButton = {
 styles.centerCircle = {
   height: 64,
   width: 64,
-  backgroundColor: '#ffd800',
-  alignItems: 'center',
-  justifyContent: 'center',
+  backgroundColor: "#ffd800",
+  alignItems: "center",
+  justifyContent: "center",
   borderRadius: 32,
 };

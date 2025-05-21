@@ -1,10 +1,36 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../../context/AuthContext"; // Đường dẫn đến AuthContext
+import { useQuery } from "@tanstack/react-query";
+import { getProfile } from "../../../api/auth";
 export default function ProfileScreen() {
+  const { logout: logout } = useContext(AuthContext);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["profile"],
+    queryFn: () => getProfile(),
+  });
+  console.log("🚀 ~ ProfileScreen ~ data:", data);
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      logout();
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
         {/* Avatar */}
@@ -14,7 +40,7 @@ export default function ProfileScreen() {
         />
         {/* Thông tin bên phải */}
         <View style={styles.infoContainer}>
-          <Text style={styles.name}>Nguyễn Văn B</Text>
+          <Text style={styles.name}>{data?.data}</Text>
           <View style={styles.premiumBadge}>
             <Text style={styles.premiumText}>Premium</Text>
           </View>
@@ -25,20 +51,22 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Info Section */}
-      <View style={styles.infoSection}>
-        <ProfileInfo label="Đang theo học tại:" value="Đại học điện lực" />
-        <ProfileInfo label="Cấp:" value="Đại học" />
-        <ProfileInfo label="Trình độ học vấn:" value="Sinh viên năm 3" />
-        <ProfileInfo label="Chuyên ngành:" value="Công nghệ phần mềm" />
-        <ProfileInfo label="Email:" value="Abc@gmail.com" />
-      </View>
+      <View style={styles.container}>
+        {/* Info Section */}
+        <View style={styles.infoSection}>
+          <ProfileInfo label="Đang theo học tại:" value="Đại học điện lực" />
+          <ProfileInfo label="Cấp:" value="Đại học" />
+          <ProfileInfo label="Trình độ học vấn:" value="Sinh viên năm 3" />
+          <ProfileInfo label="Chuyên ngành:" value="Công nghệ phần mềm" />
+          <ProfileInfo label="Email:" value="Abc@gmail.com" />
+        </View>
 
-      {/* Logout Button */}
-      <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText}>Đăng xuất</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Logout Button */}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Đăng xuất</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -50,13 +78,17 @@ const ProfileInfo = ({ label, value }) => (
 );
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#002060",
+  },
   container: {
     flex: 1,
-    backgroundColor: "#1E2333",
     padding: 16,
+    backgroundColor: "#383e6e",
   },
   header: {
-    backgroundColor: "#131827",
+    backgroundColor: "#002060",
     padding: 12,
     borderRadius: 8,
     flexDirection: "row",

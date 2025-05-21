@@ -6,42 +6,116 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import BaseHeader from "@/components/BaseHeader";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import { getDetailExam } from "../../../api/exam";
+import Popup from "../../../components/popup/Popup";
+import AddToFolder from "../Library/AddToFolder";
+
+const modes = ["exam", "practice"];
 
 const Exam = () => {
   const [activeTab, setActiveTab] = useState(false);
-  const router = useRouter();
+  const [mode, setMode] = useState(modes[0]);
+  const [open, setOpen] = useState(false);
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { id } = route.params;
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["exam", id],
+    queryFn: () => getDetailExam(id),
+  });
+
+  const examDetail = data?.data;
+
+  const { title, cover, school, subject, auth, avatar } = examDetail || {};
+
+  const quest = examDetail?.quest;
 
   const onPress = useCallback(() => {
-    router.push({ pathname: "/(Exam)/detail/[id]", params: { id: "1" } });
-  }, [router]);
+    navigation.navigate("Làm câu hỏi", { id, mode });
+  }, [navigation, id, mode]);
+
+  const onOpenListFolder = () => {
+    setOpen(!open);
+  };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#002060",
+        }}
+      >
+        <ActivityIndicator size="large" color="white" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#002060",
+          padding: 20,
+        }}
+      >
+        <Text
+          style={{
+            color: "white",
+            fontSize: 18,
+            textAlign: "center",
+          }}
+        >
+          Đã xảy ra lỗi khi tải dữ liệu.
+        </Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#0D1440" }}>
-      <BaseHeader name="Nội dung" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#2a3164", padding: 16 }}>
       <ScrollView
         style={{
           backgroundColor: "#f4f4f4",
           flex: 1,
           padding: 16,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
+          borderRadius: 24,
         }}
       >
         <View style={{ backgroundColor: "#e1e1e1", borderRadius: 16 }}>
           <Image
-            source={{
-              uri: "https://topviecit.vn/blog/wp-content/uploads/2021/11/thumb-5.jpg",
-            }}
+            source={{ uri: cover }}
             style={{ width: "100%", height: 224, borderRadius: 16 }}
             resizeMode="cover"
           />
         </View>
 
         <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 16 }}>
-          What is HTML, CSS?
+          {title}
+        </Text>
+
+        <Text
+          style={{
+            backgroundColor: "#fbbf24",
+            borderRadius: 9999,
+            paddingVertical: 2,
+            paddingHorizontal: 6,
+            alignSelf: "flex-start",
+            marginTop: 10,
+          }}
+        >
+          {subject}
         </Text>
 
         <View
@@ -60,6 +134,36 @@ const Exam = () => {
           <Text style={{ color: "gray" }}>100</Text>
         </View>
 
+        {/* Mode Selector */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginTop: 16,
+            backgroundColor: "#ffffff",
+            padding: 8,
+            borderRadius: 12,
+          }}
+        >
+          {modes.map((item) => (
+            <TouchableOpacity
+              key={item}
+              onPress={() => setMode(item)}
+              style={{
+                paddingVertical: 8,
+                paddingHorizontal: 16,
+                borderRadius: 9999,
+                backgroundColor: mode === item ? "#1E90FF" : "#dcdcdc",
+              }}
+            >
+              <Text style={{ color: mode === item ? "white" : "black" }}>
+                {item === "exam" ? "Thi thử" : "Luyện tập"}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Buttons Bắt đầu và Lưu */}
         <View
           style={{
             flexDirection: "row",
@@ -92,6 +196,7 @@ const Exam = () => {
               shadowOpacity: 0.8,
               shadowRadius: 2,
             }}
+            onPress={onOpenListFolder}
           >
             <Text style={{ color: "black", fontWeight: "600" }}>Lưu</Text>
           </TouchableOpacity>
@@ -102,20 +207,16 @@ const Exam = () => {
           style={{ flexDirection: "row", alignItems: "center", marginTop: 16 }}
         >
           <Image
-            source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
+            source={{ uri: avatar }}
             style={{ width: 40, height: 40, borderRadius: 20 }}
           />
           <View style={{ marginLeft: 12 }}>
-            <Text style={{ fontSize: 14, fontWeight: "600" }}>
-              Nguyễn Văn B
-            </Text>
-            <Text style={{ fontSize: 12, color: "gray" }}>
-              Đại học điện lực
-            </Text>
+            <Text style={{ fontSize: 14, fontWeight: "600" }}>{auth}</Text>
+            <Text style={{ fontSize: 12, color: "gray" }}>{school}</Text>
           </View>
         </View>
 
-        {/* Tabs */}
+        {/* Tabs Nội dung và Kết quả */}
         <View
           style={{
             flexDirection: "row",
@@ -129,7 +230,6 @@ const Exam = () => {
               flex: 1,
               alignItems: "center",
               paddingBottom: 8,
-              fon: "bold",
               borderBottomWidth: activeTab === false ? 2 : 0,
               borderBottomColor: "#1E90FF",
             }}
@@ -145,7 +245,6 @@ const Exam = () => {
               flex: 1,
               alignItems: "center",
               paddingBottom: 8,
-              fontWeight: "bold",
               borderBottomWidth: activeTab === true ? 2 : 0,
               borderBottomColor: "#1E90FF",
             }}
@@ -157,15 +256,56 @@ const Exam = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Hiển thị nội dung theo tab */}
+        {/* Nội dung theo tab */}
         <View style={{ padding: 16 }}>
           {activeTab === false ? (
-            <Text style={{ color: "#4B4B4B" }}>Nội dung bài kiểm tra...</Text>
+            <View>
+              {quest?.slice(0, 4).map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 12,
+                    padding: 16,
+                    marginBottom: 16,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                    {item.question}
+                  </Text>
+                  <View style={{ marginTop: 8 }}>
+                    {item.answer.map((a, i) => (
+                      <Text key={i} style={{ fontSize: 16 }}>
+                        {a}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
+              ))}
+
+              <Text
+                style={{
+                  fontSize: 14,
+                  margin: 16,
+                  textAlign: "center",
+                  color: "#1E90FF",
+                }}
+                onPress={onPress}
+              >
+                Vào làm bài kiểm tra để xem nội dung câu hỏi
+              </Text>
+            </View>
           ) : (
             <Text style={{ color: "#4B4B4B" }}>Kết quả bài kiểm tra...</Text>
           )}
         </View>
       </ScrollView>
+
+      <Popup
+        children={<AddToFolder idExam={id} />}
+        onClose={() => setOpen(!open)}
+        visible={open}
+      />
     </SafeAreaView>
   );
 };

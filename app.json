@@ -1,10 +1,9 @@
 {
   "expo": {
-    "name": "bold-red-pastry",
     "slug": "snack-0c5af900-0ae3-40e5-a32c-636e7616bb5e",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/doquiz.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
