@@ -5,6 +5,8 @@ import { Avatar } from "react-native-paper";
 
 const QuizCardFolder = ({ data, onDelete }) => {
   const { id, title, subject, cover, auth, school, avatar } = data;
+  console.log("🚀 ~ QuizCardFolder ~ avatar:", avatar);
+  console.log("🚀 ~ QuizCardFolder ~ data:", data);
   const navigation = useNavigation();
 
   const handleCardPress = () => {
@@ -12,7 +14,7 @@ const QuizCardFolder = ({ data, onDelete }) => {
   };
 
   const handleProfilePress = useCallback(() => {
-    navigation.navigate("Channel");
+    navigation.navigate("Kênh");
   }, [navigation]);
 
   // Khi giữ lâu: hỏi xác nhận xóa và gọi onDelete truyền từ cha
@@ -107,4 +109,3 @@ const QuizCardFolder = ({ data, onDelete }) => {
 };
 
 export default QuizCardFolder;
-  

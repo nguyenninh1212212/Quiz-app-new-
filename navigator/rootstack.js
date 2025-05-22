@@ -15,6 +15,11 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"; // Assuming you have an AuthContext to manage authentication state
 import { Feather } from "@expo/vector-icons";
 import Folder from "../screens/(tabs)/Library/[id]";
+import forget from "../screens/(auth)/forget";
+import codeScreen from "../screens/(auth)/code";
+import ResetPassword from "../screens/(auth)/resetPassword";
+import SuccessScreen from "../screens/(auth)/Success";
+import WelcomeScreen from "../screens/(auth)/Welcome";
 const Stack = createNativeStackNavigator();
 
 export default function RootStack() {
@@ -91,6 +96,11 @@ export default function RootStack() {
       ) : (
         <>
           <Stack.Screen
+            name="welcome"
+            component={WelcomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
             name="login"
             component={Login}
             options={{ headerShown: false }}
@@ -98,6 +108,26 @@ export default function RootStack() {
           <Stack.Screen
             name="register"
             component={Register}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="forgot"
+            component={forget}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="code"
+            component={codeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ResetPassword"
+            component={ResetPassword}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Sucess"
+            component={SuccessScreen}
             options={{ headerShown: false }}
           />
         </>

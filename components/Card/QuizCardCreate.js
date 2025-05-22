@@ -67,24 +67,10 @@ const QuizCardCreate = ({ data, navigation }) => {
           }}
         >
           {/* Thông tin người tạo */}
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity onPress={handleProfilePress}>
-              <Image
-                source={{ uri: avatar }}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                }}
-              />
-            </TouchableOpacity>
-            <View style={{ marginLeft: 8 }}>
-              <Text style={{ color: "#a0aec0", fontSize: 10 }}>{school}</Text>
-            </View>
-          </View>
 
           {/* Nội dung đề thi */}
           <Text
+            numberOfLines={2}
             style={{
               color: "black",
               fontWeight: "600",
@@ -94,6 +80,7 @@ const QuizCardCreate = ({ data, navigation }) => {
           >
             {title}
           </Text>
+          <Text style={{ color: "#a0aec0", fontSize: 10 }}>{school}</Text>
 
           {/* Số câu hỏi */}
           <View
