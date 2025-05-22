@@ -205,10 +205,6 @@ const RegisterScreen = () => {
                 <ErrorText message={errors.username} />
               </View>
 
-              {/* Email */}
-
-              {/* Age & Phone Number */}
-
               {/* Password */}
               <View style={{ marginBottom: 12 }}>
                 <Text style={{ color: "#ffd800", marginBottom: 4 }}>

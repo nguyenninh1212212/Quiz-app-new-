@@ -12,8 +12,6 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

@@ -11,15 +11,15 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../../api/auth"; // Đường dẫn đến file auth.js trong api folder
+import { login } from "../../api/auth";
 import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext"; // Đường dẫn đến AuthContext
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureText, setSecureText] = useState(true);
-  const navigation = useNavigation(); // Sử dụng hook để điều hướng
+  const navigation = useNavigation();
 
   const { login: loginContext } = useContext(AuthContext);
 
@@ -30,18 +30,19 @@ export default function Login() {
       await loginContext(token); // Gọi login từ context
       Alert.alert("Đăng nhập thành công", "Chào mừng bạn trở lại!");
     },
-    onError: (error) => {
-      console.log("🚀 ~ Login ~ error:", error);
+    onError: () => {
       Alert.alert("Lỗi đăng nhập", "Thông tin đăng nhập không đúng.");
     },
   });
+
+  const { mutate, isLoading } = mutation;
 
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Vui lòng nhập đầy đủ tài khoản và mật khẩu");
       return;
     }
-    mutation.mutate({ username: email, password }); // Không cần await
+    mutate({ username: email, password }); // Không cần await
   };
 
   return (
@@ -84,13 +85,15 @@ export default function Login() {
       </View>
 
       {/* Forgot Password */}
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("forgot")}>
         <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
       </TouchableOpacity>
 
       {/* Login Button */}
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Đăng nhập</Text>
+        <Text style={styles.loginButtonText}>
+          {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+        </Text>
       </TouchableOpacity>
 
       {/* Register link */}
